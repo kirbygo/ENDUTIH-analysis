@@ -1,33 +1,4 @@
-
-*Stata 16.0 MP
-*Windows 10
-/*
-      ooooooooooooooooooooooooooooooooooooo
-      8                                .d88
-      8  oooooooooooooooooooooooooooood8888
-      8  8888888888888888888888888P"   8888    oooooooooooooooo
-      8  8888888888888888888888P"      8888    8              8
-      8  8888888888888888888P"         8888    8             d8
-      8  8888888888888888P"            8888    8            d88
-      8  8888888888888P"               8888    8           d888
-      8  8888888888P"                  8888    8          d8888
-      8  8888888P"                     8888    8         d88888
-      8  8888P"                        8888    8        d888888
-      8  8888oooooooooooooooooooooocgmm8888    8       d8888888
-      8 .od88888888888888888888888888888888    8      d88888888
-      8888888888888888888888888888888888888    8     d888888888
-                                               8    d8888888888
-         ooooooooooooooooooooooooooooooo       8   d88888888888
-        d                       ...oood8b      8  d888888888888
-       d              ...oood888888888888b     8 d8888888888888
-      d     ...oood88888888888888888888888b    8d88888888888888
-     dood8888888888888888888888888888888888b
-*/
-*-----------------------------------------------------------------------------------------
-*-----------------------------------------------------------------------------------------
-*-----------------------------------------------------------------------------------------
-*-----------------------------------------------------------------------------------------¨
-                                *CORRER ESTO SIEMPRE
+*Preamble
 *Cambio directorio
 * Prueba si el escritorio está en C o en D y establece el necesario
 clear all
@@ -43,12 +14,9 @@ cd UN_2
 *El directorio base: Carpeta Work en Escritorio
 global dir : pwd
 cd $dir
-*-----------------------------------------------------------------------------------------
-*-----------------------------------------------------------------------------------------
-*-----------------------------------------------------------------------------------------
-*-----------------------------------------------------------------------------------------
 
-
+********************************************************************************
+*Descarga de información
 *Bajar info de la INEGI, 2018. Y unzip
 cap mkdir data
 cd data
@@ -59,6 +27,60 @@ forvalues i = 2015/2019 {
 	unzipfile dutih`i'_bd_dbf.zip, replace
 }
 cd $dir
+
+*Bajar INPC del INEGI
+cap mkdir inpc
+cd inpc
+*Entramos aquí:
+*https://www.inegi.org.mx/app/indicesdeprecios/Estructura.aspx?idEstructura=112001200090&T=%C3%8Dndices%20de%20Precios%20al%20Consumidor&ST=Clasificaci%C3%B3n%20del%20consumo%20individual%20por%20finalidades(CCIF)%20(quincenal)
+*Y descargamos lo que queremos, en excel para quitarle a mano el metadato
+
+*Es más fácil y rápido que la API, dado que solo es 1 descarga. La mera neta, mano
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*Bajar info del BIT del IFT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 *Una vez descargadas las bases HAY QUE PASARLAS A CVS desde excel pues en dbf 
 * cuando lo importa a stata genera missings sin sentido.
 * Otros diversos ajustes manuales de bases

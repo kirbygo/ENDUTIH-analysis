@@ -1,47 +1,24 @@
+*Preamble
 
-*Mapas
-/*
-.
-\'~~~-,
- \    '-,_ 
-  \ /\    `~'~''\          M E X I C O
-  _\ \\          \/~\ 
-  \__ \\             \   
-     \ \\.             \  
-      \ \ \             `~~
-       '\\ \.             /
-        L \  \            |
-         \_\  \           |             _.----,
-               |           \           !     /
-              '._           \_      __/    _/
-                 \_           ''--''    __/
-                   \.__                |
-                       ''.__  __.._   __\
-                            ''     './  `
-*/
-********************************************************************************
-***************************************DISCLAIMER*******************************
-*Stata 16.0 MP
-*Windows 10
-********************************************************************************
-******************************************PREAMBULO*****************************
 *Cambio directorio
-* Prueba si el escritorio está en C o en D y establece el necesario
+*Prueba si el escritorio está en C o en D y establece el necesario
 clear all
 cap cd "D:\Users\\`c(username)'\Desktop"
 if _rc != 0 {
 	cd "C:\Users\\`c(username)'\Desktop" 
 	*cap ^ else if _rc != 0 {cd "E:\Users\\`c(username)'\Desktop" }
 }
-*Crear carpeta "Work" en Escritorio
+*Crear carpeta base en Escritorio
 cap mkdir UN_2
 cd UN_2
 
-*El directorio base: Carpeta Work en Escritorio
+*El directorio base:
 global dir : pwd
 cd $dir
+
 ********************************************************************************
-************************************HACER SOLO UNA VEZ**************************
+*Descarga de shp files
+
 cd $dir
 cap mkdir Mapas
 *Descargamos el shape de mapas de INEGI
@@ -75,31 +52,15 @@ erase "$dir\mapas\conjunto_de_datos\estados_shp.dta"
 erase "$dir\mapas\conjunto_de_datos\estados.dta"
 
 
-
-*****Aqui empezamos con el mapa*****
+********************************************************************************
+*Inicio del mapa
 clear all
 cd $dir\mapas
 use estados
-
-*AQUI HACEMOS LOS MERGES CORRESPONDIENTES CON LO QUE QUERRAMOS METER AL MAPA
-
-
-
-
-
-
-merge 1:1 ent using "$dir\mapas\usuariosnotelefcel.dta"
-
-save "$dir\mapas\estados.dta", replace
-
-
-
-
-
 *arreglamos temas
-drop _merge
 destring CVE_ENT, replace
 rename CVE_ENT ent
+replace NOM_ENT = "Ags" in 1
 replace NOM_ENT = "BC" in 2
 replace NOM_ENT = "BCS" in 3
 replace NOM_ENT = "Coahuila" in 5
@@ -111,15 +72,14 @@ replace NOM_ENT = "Querétaro" in 22
 replace NOM_ENT = "SLP" in 24
 replace NOM_ENT = "Veracruz" in 30
 replace NOM_ENT = "Yucatan" in 31
-form disus nodisus  %30.0fc
-gen pobtotal = 	disus + nodisus
-form pobtotal  %30.0fc
-gen porcdisus = disus/pobtotal
-gen porcnodisus = nodisus/pobtotal
-form porcdisus porcnodisus  %9.2f
-gen pdisus = porcdisus*100
-gen pnodisus = porcnodisus*100
-form pdisus pnodisus %9.2fc
+
+*AQUI HACEMOS LOS MERGES CORRESPONDIENTES CON LO QUE QUERRAMOS METER AL MAPA
+*Mergeamos info de estados
+*merge 1:1 ent using "$dir\xxx\xxx.dta"
+*drop _merge
+*format xxx  %30.0fc
+
+
 save "$dir\mapas\estados.dta", replace
 
 *Ya haces el mapa con todas las opciones del mundo
@@ -137,7 +97,7 @@ graph export "mapaporcusuariostelefoníacelular2.png", as(png) wid(5000) replace
 
 
 
-*Para guardar el mapa*****
+*Para guardar el mapa
 graph export "mapausuariostelefoníacelular.png", as(png) wid(5000) replace
 
 ********************************************************************************
