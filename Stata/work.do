@@ -15,7 +15,9 @@ cd UN_2
 global dir : pwd
 cd $dir
 
-********************************************************************************
+
+*************************************************************** DATA DOWNLOADING
+************************************************************************ ENDUTIH
 *Descarga de información
 *Bajar info de la INEGI, 2018. Y unzip
 cap mkdir data
@@ -28,70 +30,75 @@ forvalues i = 2015/2019 {
 }
 cd $dir
 
+*************************************************************************** INPC
 *Bajar INPC del INEGI
 cap mkdir inpc
 cd inpc
 *Entramos aquí:
 *https://www.inegi.org.mx/app/indicesdeprecios/Estructura.aspx?idEstructura=112001200090&T=%C3%8Dndices%20de%20Precios%20al%20Consumidor&ST=Clasificaci%C3%B3n%20del%20consumo%20individual%20por%20finalidades(CCIF)%20(quincenal)
 *Y descargamos lo que queremos, en excel para quitarle a mano el metadato
-
+*Lo metemos ahí en esa carpetiux
 *Es más fácil y rápido que la API, dado que solo es 1 descarga. La mera neta, mano
+cd $dir
+
+************************************************************************ BIT IFT
+*Bajar BIT del IFT
+cap mkdir suscrip
+cd suscrip
+*lineas telefonía fija
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_LINEAS_HIST_TELFIJA_ITE_VA.csv" "lin_tel_fija.csv"
+*acceso internet banda ancha fija
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_ACC_INTER_HIS_ITE_VA.csv" "acc_int_fija.csv"
+*acceso tv restringida
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_ACC_TVRES_HIS_ITE_VA.csv" "acc_tv_rest.csv"
+*lineas telefonía movil
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_LINEAS_HIST_TELMOVIL_ITE_VA.csv" "lin_tel_mov.csv"
+*lineas internet movil
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_LINEAS_HIST_INTMOVIL_ITE_VA.csv" "lin_int_mov.csv"
+*acceso a banda ancha fija por velocidad
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_ACC_BAFXV_ITE_VA.csv" "acc_int_fija_por_vel.csv"
+*market share TV restringida
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_MARKET_SHARE_TVRES_ITE_VA.csv" "tv_rest_mkt_shr.csv"
+*suscriptores TV restringida
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_SUS_TVRES_ITE_VA.csv" "sus_tv_rest.csv"
+
+*OJO. Parece ser que ya no funciona programático ahora :(
+*Habrá de hacerse manualmente :(
+*Te odio IFT !!!
+
+cd $dir
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*Bajar info del BIT del IFT
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*Una vez descargadas las bases HAY QUE PASARLAS A CVS desde excel pues en dbf 
-* cuando lo importa a stata genera missings sin sentido.
-* Otros diversos ajustes manuales de bases
-*Imposible importar bien DBFs, se hizo con Stat-Transfer
-
+*************************************************************** DATA DOWNLOADING
 *generar directorio donde guarde las bases "limpias"
+cd $dir
 cap mkdir "db"
+************************************************************************ ENDUTIH
+* Una vez descargadas las bases HAY QUE PASARLAS A DTA pues en dbf 
+* cuando lo importa a stata genera missings sin sentido
+* Otros diversos ajustes manuales de bases
+* Imposible importar bien DBFs, se hizo con Stat-Transfer
+* Te odio STATA!
+* Las guardo en .dta en la carpeta db
+* Sin embargo, todo está en string. Igual las tenemos que limpiar, Esperancita!
 
 *Importar la base
 use "$dir\db\2015-hogares", clear
 destring D_R EST_DIS P* UPM_DIS VIV_SEL aream ent hogar nreninfo upm, replace
+
+*...
+
+
+*************************************************************************** INPC
+
+
+************************************************************************ BIT IFT
+
+
+
+
+
+
 
 
 **************************HOGARES QUE DISPONEN DE TELEVISOR*********************************
