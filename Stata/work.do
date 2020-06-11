@@ -75,7 +75,6 @@ destring D_R EST_DIS P* UPM_DIS VIV_SEL aream ent hogar nreninfo upm, replace
 *esto era solo para checar que no hubiera missing en esta variable porque sinoooooooooo estariamos mal
 tab hogar, m
 
-
 *televisor analógico
 tab P4_1_2 [fw = hogar], m
 
@@ -83,8 +82,8 @@ tab P4_1_2 [fw = hogar], m
 tab P4_1_4 [fw = hogar]
 
 *ambos
-gen tv2tipos = p4_1_2 * p4_1_4
-tab tv2tipos [fw = fac_hog]
+gen tv2tipos = P4_1_2 * P4_1_4
+tab tv2tipos [fw = hogar]
 
 ** tv2tipos=1 significa que tienen ambos tipos de televisores; tv2tipos=2 significa que tienen solo 1 tipo de televisor; tv2tipos=4 significa que no tienen de ningun tipo.
 *los que tienen televisor
