@@ -61,7 +61,8 @@ copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_ACC_BAFXV_ITE_VA.csv" "acc_
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_MARKET_SHARE_TVRES_ITE_VA.csv" "tv_rest_mkt_shr.csv"
 *suscriptores TV restringida
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_SUS_TVRES_ITE_VA.csv" "sus_tv_rest.csv"
-
+*suscripciones Banda ancha fija
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_SUS_BAF_ITE_VA.csv" "sus_int_fija.csv"
 *OJO. Parece ser que ya no funciona programático ahora :(
 *Habrá de hacerse manualmente :(
 *Te odio IFT !!!
@@ -293,6 +294,30 @@ duplicates r date grupo
 
 save "ift\tv_rest_mkt_shr.dta", replace
 
+***********************************9
+clear all
+import delimited "suscrip\sus_int_fija.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
+
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
+
+sort date
+*Ojo, de 2013 a 2019 es MENSUAL
+duplicates r date concesionario
+*Info por concesionario.
+
+save "ift\sus_int_fija.dta", replace
+
+
+
 ********************************************************************************
 ****************************************************************** DATA ANALYSIS
 * generar directorio donde guarde los resultados
@@ -342,10 +367,241 @@ graph export "results\inpc2.png", as(png) wid(1000) replace
 ************************************************************************ BIT IFT
 *Hacer una de líneas movil, líneas internet movil, línea fija
 * internet fijo y TV de paga
+*Necesito carpeta temporal
+cd $dir
+cap mkdir "tmp"
+
+* Tengo que juntar lo siguiente:
+
+*** TV Restringida
+*Ojo, de 2013 a 2019 MENSUAL.
+*Info por concesionario.
+* "ift\sus_tv_rest.dta"
+
+*** Banda ancha fija
+*Ojo, de 2013 a 2019 es MENSUAL
+*Info por concesionario.
+* "ift\sus_int_fija.dta"
+
+*** Telefonía movil
+*Ojo, de diciembre de 1990 a 2012 es TRIMESTRAL.
+* De 2013 a 2019 es mensual.
+*Info por concesionario o empresa.
+* "ift\lin_tel_mov.dta"
+
+*** Internet movil
+*Ojo, de 2010 a junio de 2013 es TRIMESTRAL. De junio de 2013 a 2019 es MENSUAL
+*Info por concesionario o empresa
+* "ift\lin_int_mov.dta"
+
+*** Telefonía fija
+*Ojo, de 1971 a 1991 es ANUAL nacional.
+* De 1992 a 1999 es anual por estado.
+* De 2000 a 2019 es mensual por estado.
+*Info por concesionario o empresa y entidad
+* "ift\lin_tel_fija.dta"
+
+*Homogéneo a partir de 2014
+*Mensual
+
+clear all
+use "ift\sus_tv_rest.dta"
+keep if year>=2014
+collapse (sum) resid=s_residencial_e noresid=s_no_residencial_e ///
+ambos=s_ambos_e noespecif=s_no_especificado_e suscrip=s_total_e, by(date)
+save "tmp\l_tv_rest.dta"
+
+clear all
+use "ift\sus_int_fija.dta"
+keep if year>=2014
+collapse (sum) resid=s_residencial_e noresid=s_no_residencial_e ///
+suscrip=s_total_e, by(date)
+save "tmp\l_int_fija.dta"
+
+clear all
+use "ift\lin_tel_mov.dta"
+keep if year>=2014
+collapse (sum) suscrip=l_total_e prepago=l_prepago_e ///
+pospagoc=l_pospagoc_e pospagol=l_pospagol_e, by(date)
+save "tmp\l_tel_mov.dta"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 clear all
 use "ift\acc_int_fija.dta"
 xtset k_acceso_internet date
 xtline a_total, ov
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
