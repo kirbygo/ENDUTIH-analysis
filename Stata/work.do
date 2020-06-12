@@ -94,63 +94,212 @@ destring D_R EST_DIS P* UPM_DIS VIV_SEL aream ent hogar nreninfo upm, replace
 *************************************************************************** INPC
 clear all
 cd $dir
+cap mkdir inpc
 import excel "inpc\inpc.xls", sheet("stata") firstrow
 
-gen date = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Ojo, la info es quincenal
+*La fecha real puede usarse como tsset
+gen date = datereal
 format date %td
+gen count = date
 
 save "db\inpc.dta", replace
 ************************************************************************ BIT IFT
+clear all
+cd $dir
+cap mkdir ift
 
+***********************************1
+clear all
+import delimited "suscrip\acc_int_fija.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
 
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Ojo, la info es mensual
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de 2000 a 2012 es ANUAL. De 2013 a 2019 es MENSUAL
+duplicates r date k_acceso_internet
+*Info por k_acceso_internet
 
+save "ift\acc_int_fija.dta", replace
 
+***********************************2
+clear all
+import delimited "suscrip\acc_int_fija_por_vel.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
 
+gen datereal = date(string(month)+"/"+string(year),"MY")
+format datereal %td
+*Ojo, la info es mensual
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de 2013 a 2019 es MENSUAL
+duplicates r date concesionario
+*Info por concesionario
 
+save "ift\acc_int_fija_por_vel.dta", replace
 
+***********************************3
+clear all
+import delimited "suscrip\acc_tv_rest.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
 
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Ojo, la info es trimestral de 1996 a 2012
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de 1996 a 2012 es TRIMESTRAL. De 2013 a 2019 es MENSUAL
+duplicates r date concesionario k_acceso k_entidad
+*Info por concesionario, tipo de acceso y entidad
 
+save "ift\acc_tv_rest.dta", replace
 
+***********************************4
+clear all
+import delimited "suscrip\lin_int_mov.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
 
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Ojo, la info es trimestral de 2010 a junio de 2013
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de 2010 a junio de 2013 es TRIMESTRAL. De junio de 2013 a 2019 es MENSUAL
+duplicates r date concesionario
+*Info por concesionario o empresa
 
+save "ift\lin_int_mov.dta", replace
 
+***********************************5
+clear all
+import delimited "suscrip\lin_tel_fija.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
 
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de 1971 a 1991 es ANUAL nacional.
+* De 1992 a 1999 es anual por estado.
+* De 2000 a 2019 es mensual por estado.
+duplicates r date concesionario entidad
+*Info por concesionario o empresa y entidad
 
+save "ift\lin_tel_fija.dta", replace
 
+***********************************6
+clear all
+import delimited "suscrip\lin_tel_mov.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
 
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de diciembre de 1990 a 2012 es TRIMESTRAL.
+* De 2013 a 2019 es mensual.
+duplicates r date concesionario
+*Info por concesionario o empresa.
 
+save "ift\lin_tel_mov.dta", replace
 
+***********************************7
+clear all
+import delimited "suscrip\sus_tv_rest.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
 
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de 2013 a 2019 MENSUAL.
+duplicates r date concesionario
+*Info por concesionario.
 
+save "ift\sus_tv_rest.dta", replace
 
+***********************************8
+clear all
+import delimited "suscrip\tv_rest_mkt_shr.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
 
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
 
+sort date
+*Ojo, de 1996 a 2012 es trimestral.
+* De de 2013 a 2019 es MENSUAL
+duplicates r date grupo
+*Info por concesionario.
 
+save "ift\tv_rest_mkt_shr.dta", replace
 
+********************************************************************************
+****************************************************************** DATA ANALYSIS
+* generar directorio donde guarde los resultados
+cd $dir
+cap mkdir "results"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+*************************************************************************** INPC
 clear all
 use "db\inpc.dta"
 tsset date
@@ -164,6 +313,17 @@ gen nbinpccomserv = (inpccomserv/inpccomserv[1])*100
 
 twoway tsline inpctotal inpccom inpccomequipo inpccomserv, tline(15jun2013) tline(15jul2014)
 twoway tsline nbinpctotal nbinpccom nbinpccomequipo nbinpccomserv, tline(15jun2013) tline(15jul2014)
+
+
+
+************************************************************************ BIT IFT
+clear all
+use "ift\acc_int_fija.dta"
+xtset k_acceso_internet date
+xtline a_total, ov
+
+
+
 
 
 
