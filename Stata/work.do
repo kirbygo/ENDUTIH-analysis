@@ -69,7 +69,7 @@ copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_SUS_TVRES_ITE_VA.csv" "sus_
 cd $dir
 
 
-*************************************************************** DATA DOWNLOADING
+****************************************************************** DATA CLEANING
 *generar directorio donde guarde las bases "limpias"
 cd $dir
 cap mkdir "db"
@@ -85,17 +85,85 @@ cap mkdir "db"
 *Importar la base
 use "$dir\db\2015-hogares", clear
 destring D_R EST_DIS P* UPM_DIS VIV_SEL aream ent hogar nreninfo upm, replace
+*rename
+*save
 
 *...
 
 
 *************************************************************************** INPC
+clear all
+cd $dir
+import excel "inpc\inpc.xls", sheet("stata") firstrow
 
+gen date = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format date %td
 
+save "db\inpc.dta", replace
 ************************************************************************ BIT IFT
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+clear all
+use "db\inpc.dta"
+tsset date
+gen nbinpctotal = (inpctotal/inpctotal[1])*100
+gen nbinpccom = (inpccom/inpccom[1])*100
+gen nbinpccomequipo = (inpccomequipo/inpccomequipo[1])*100
+gen nbinpccomserv = (inpccomserv/inpccomserv[1])*100
+
+*Reforma 11 jun 2013
+*Ley 14 jul 2014
+
+twoway tsline inpctotal inpccom inpccomequipo inpccomserv, tline(15jun2013) tline(15jul2014)
+twoway tsline nbinpctotal nbinpccom nbinpccomequipo nbinpccomserv, tline(15jun2013) tline(15jul2014)
 
 
 
