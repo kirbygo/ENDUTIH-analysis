@@ -641,7 +641,7 @@ graph export "results\BAF_lento.png", as(png) wid(1500) replace
 tw tsline ptAMERICA_MOVIL ptATnT ptAXTEL ptGRUPO_TELEVISA ptMAXCOM ptMEGACABLE_MCM ptTOTALPLAY, ///
 title("Participación de los principales grupos en número de accesos BAF") ///
 subtitle("2 Mbps a 9.99 Mbps") ///
-ytitle("Participación en ´accesos a BAF (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ytitle("Participación en accesos a BAF (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
 scheme(538) legend(label(1 "AMX") label(2 "AT&T") label(3 "Axtel") label(4 "GTV") label(5 "Maxcom") label(6 "Megacable") label(7 "TotalPlay") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
@@ -652,13 +652,153 @@ graph export "results\BAF_lento2.png", as(png) wid(1000) replace
 tw tsline mtAMERICA_MOVIL mtATnT mtAXTEL mtGRUPO_TELEVISA mtMAXCOM mtMEGACABLE_MCM mtTOTALPLAY, ///
 title("Participación de los principales grupos en número de accesos BAF") ///
 subtitle("2 Mbps a 9.99 Mbps. Cifras en millones.") ///
-ytitle("Participación en ´accesos a BAF (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ytitle("Número de accesos a BAF de esa velocidad (millones)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
 scheme(538) legend(label(1 "AMX") label(2 "AT&T") label(3 "Axtel") label(4 "GTV") label(5 "Maxcom") label(6 "Megacable") label(7 "TotalPlay") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información del IFT, BIT.")
 *Salvar
 graph export "results\BAF_lento3.png", as(png) wid(1000) replace
+
+
+
+
+
+clear all
+use "ift\acc_int_fija_por_vel.dta"
+keep if year>=2013
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+sort grupo date
+*v1 es 256 kbps a 1.99 Mbps
+*v2 es de 2 a 9.99 Mbps
+*v3 es de 10 a 100 Mbps
+*v4 es más de 100 Mbps
+
+collapse (sum) a_v3_e, by(grupo date)
+rename a_v3_e t
+reshape wide t, i(date) j(grupo) string
+
+sort date
+tsset date, m
+
+egen total = rowtotal(tAIRECABLE tALESTRA tAMERICA_MOVIL tATnT tAXESAT tAXTEL tCABLECOM tCABLEVISION_RED tDISH_MVS tEDILAR tELARA tGRUPO_TELEVISA tIENTC tMARCATEL tMAXCOM tMEGACABLE_MCM tNETWEY tSTARGROUP tTELEFONICA tTOTALPLAY tTRANSTELCO tTV_REY tULTRAVISION)
+
+foreach perrito in tAIRECABLE tALESTRA tAMERICA_MOVIL tATnT tAXESAT tAXTEL tCABLECOM tCABLEVISION_RED tDISH_MVS tEDILAR tELARA tGRUPO_TELEVISA tIENTC tMARCATEL tMAXCOM tMEGACABLE_MCM tNETWEY tSTARGROUP tTELEFONICA tTOTALPLAY tTRANSTELCO tTV_REY tULTRAVISION {
+	gen p`perrito' = (`perrito'/total)*100
+	gen m`perrito' = `perrito'/1000000
+}
+
+graph hbar ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
+title("Participación de los principales grupos en accesos BAF (mensual, 2013-2019)") ///
+subtitle("10 a 100 Mbps") ///
+ytitle("Participación en accesos BAF (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "AMX") label(2 "GTV") label(3 "Megacable") label(4 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+*Salvar
+graph export "results\BAF_rapido.png", as(png) wid(1500) replace
+
+
+tw tsline ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, ///
+title("Participación de los principales grupos en número de accesos BAF") ///
+subtitle("10 a 100 Mbps") ///
+ytitle("Participación en accesos a BAF (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "AMX") label(2 "GTV") label(3 "Megacable") label(4 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\BAF_rapido2.png", as(png) wid(1000) replace
+
+tw tsline mtAMERICA_MOVIL mtGRUPO_TELEVISA mtMEGACABLE_MCM mtTOTALPLAY, ///
+title("Participación de los principales grupos en número de accesos BAF") ///
+subtitle("10 a 100 Mbps. Cifras en millones.") ///
+ytitle("Número de accesos a BAF de esa velocidad (millones)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "AMX") label(2 "GTV") label(3 "Megacable") label(4 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\BAF_rapido3.png", as(png) wid(1000) replace
+
+
+
+
+
+clear all
+use "ift\acc_int_fija_por_vel.dta"
+keep if year>=2013
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+sort grupo date
+*v1 es 256 kbps a 1.99 Mbps
+*v2 es de 2 a 9.99 Mbps
+*v3 es de 10 a 100 Mbps
+*v4 es más de 100 Mbps
+
+collapse (sum) a_v1_e a_v2_e a_v3_e a_v4_e (first) year, by(grupo date)
+rename a_v1_e v1
+rename a_v2_e v2
+rename a_v3_e v3
+rename a_v4_e v4
+
+collapse (mean) v1 v2 v3 v4, by(grupo year)
+
+bysort year : egen tot_v1 = total(v1)
+bysort year : egen tot_v2 = total(v2)
+bysort year : egen tot_v3 = total(v3)
+bysort year : egen tot_v4 = total(v4)
+
+foreach perrito in v1 v2 v3 v4 {
+	gen p_`perrito' = (`perrito'/tot_`perrito')*100
+	format p_`perrito' %2.0f
+}
+
+keep if year==2019
+keep grupo p_v1 p_v2 p_v3 p_v4
+egen suma = rowtotal(p_v1 p_v2 p_v3 p_v4)
+gsort -suma
+keep if suma >=5
+drop suma
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
