@@ -773,8 +773,12 @@ drop suma
 
 
 
+clear all
+use "ift\tv_rest_mkt_shr.dta"
+keep if year>=2013 & month==12
+drop fecha k_grupo datereal date count month day
 
-
+reshape wide market_share, i(grupo) j(year)
 
 
 
