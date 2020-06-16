@@ -662,8 +662,6 @@ graph export "results\BAF_lento3.png", as(png) wid(1000) replace
 
 
 
-
-
 clear all
 use "ift\acc_int_fija_por_vel.dta"
 keep if year>=2013
@@ -729,7 +727,6 @@ graph export "results\BAF_rapido3.png", as(png) wid(1000) replace
 
 
 
-
 clear all
 use "ift\acc_int_fija_por_vel.dta"
 keep if year>=2013
@@ -772,13 +769,236 @@ drop suma
 
 
 
-
 clear all
 use "ift\tv_rest_mkt_shr.dta"
 keep if year>=2013 & month==12
 drop fecha k_grupo datereal date count month day
 
 reshape wide market_share, i(grupo) j(year)
+
+
+
+clear all
+use "ift\acc_tv_rest.dta"
+*2013 a 2019 mensual 
+keep if year>=2013
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+sort grupo date
+
+collapse (sum) a_total_e, by(grupo date)
+rename a_total_e t
+reshape wide t, i(date) j(grupo) string
+
+sort date
+tsset date, m
+
+egen total = rowtotal(tAIRECABLE tAXTEL tCABLECOM tCABLEVISION_RED tDISH_MVS tGRUPO_TELEVISA tMAXCOM tMEGACABLE_MCM tSTARGROUP tTOTALPLAY tTV_REY tULTRAVISION)
+
+foreach perrito in tAIRECABLE tAXTEL tCABLECOM tCABLEVISION_RED tDISH_MVS tGRUPO_TELEVISA tMAXCOM tMEGACABLE_MCM tSTARGROUP tTOTALPLAY tTV_REY tULTRAVISION {
+	gen p`perrito' = (`perrito'/total)*100
+	gen m`perrito' = `perrito'/1000000
+}
+
+graph hbar ptCABLECOM ptCABLEVISION_RED ptDISH_MVS ptGRUPO_TELEVISA ptMEGACABLE_MCM ptSTARGROUP ptTOTALPLAY, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
+title("Participación de los principales grupos en accesos TV Restringida (mensual, 2013-2019)") ///
+ytitle("Participación en accesos TV Restringida (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "Cablecom") label(2 "Cablevisión") label(3 "Dish-MVS") label(4 "GTV") label(5 "MCM") label(6 "Stargroup") label(7 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+*Salvar
+graph export "results\TV_rest-acc1.png", as(png) wid(1500) replace
+
+
+tw tsline ptCABLECOM ptCABLEVISION_RED ptDISH_MVS ptGRUPO_TELEVISA ptMEGACABLE_MCM ptSTARGROUP ptTOTALPLAY, ///
+title("Participación de los principales grupos en accesos TV Restringida (mensual, 2013-2019)") ///
+ytitle("Participación en accesos a TV Restringida (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Cablecom") label(2 "Cablevisión") label(3 "Dish-MVS") label(4 "GTV") label(5 "MCM") label(6 "Stargroup") label(7 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\TV_rest-acc2.png", as(png) wid(1000) replace
+
+tw tsline mtCABLECOM mtCABLEVISION_RED mtDISH_MVS mtGRUPO_TELEVISA mtMEGACABLE_MCM mtSTARGROUP mtTOTALPLAY, ///
+title("Participación de los principales grupos en accesos TV Restringida (mensual, 2013-2019)") ///
+ytitle("Número de accesos a TV Restringida (millones)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Cablecom") label(2 "Cablevisión") label(3 "Dish-MVS") label(4 "GTV") label(5 "MCM") label(6 "Stargroup") label(7 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\TV_rest-acc3.png", as(png) wid(1000) replace
+
+
+
+clear all
+use "ift\acc_int_fija_por_vel.dta"
+keep if year>=2013
+*v1 es 256 kbps a 1.99 Mbps
+*v2 es de 2 a 9.99 Mbps
+*v3 es de 10 a 100 Mbps
+*v4 es más de 100 Mbps
+rename a_v1_e v1
+rename a_v2_e v2
+rename a_v3_e v3
+rename a_v4_e v4
+rename a_total_e totalero
+*ERROR. El total reportado es distinto a la suma de v1 v2 v3 v4 desde 2015m4
+
+collapse (sum) v1 v2 v3 v4, by(date)
+gen double total = v1 + v2 + v3 + v4
+
+gen pv1 = (v1/total)*100
+gen pv2 = (v2/total)*100
+gen pv3 = (v3/total)*100
+gen pv4 = (v4/total)*100
+format pv* %4.2f
+
+replace v1 = v1/1000000
+replace v2 = v2/1000000
+replace v3 = v3/1000000
+replace v4 = v4/1000000
+
+graph hbar pv1 pv2 pv3 pv4, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
+title("Accesos de banda ancha fija por velocidad (mensual, 2013-2019)") ///
+ytitle("Porcentaje de accesos (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "256kbps-1.99Mbps") label(2 "2-9.99Mbps") label(3 "10-100Mbps") label(4 ">100Mbps") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\porc-vel.png", as(png) wid(1500) replace
+
+graph hbar v1 v2 v3 v4, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
+title("Accesos de banda ancha fija por velocidad (mensual, 2013-2019)") ///
+ytitle("Millones de accesos") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "256kbps-1.99Mbps") label(2 "2-9.99Mbps") label(3 "10-100Mbps") label(4 ">100Mbps") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\porc-vel2.png", as(png) wid(1500) replace
+
+
+
+* Tengo que juntar lo siguiente:
+
+clear all
+use "ift\sus_tv_rest.dta"
+keep if year>=2014
+collapse (sum) resid=s_residencial_e noresid=s_no_residencial_e ///
+ambos=s_ambos_e noespecif=s_no_especificado_e tv_rest=s_total_e, by(grupo date)
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+save "tmp\parti_tv_rest.dta", replace
+
+clear all
+use "ift\sus_int_fija.dta"
+keep if year>=2014
+collapse (sum) resid=s_residencial_e noresid=s_no_residencial_e ///
+int_fija=s_total_e, by(grupo date)
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+save "tmp\parti_int_fija.dta", replace
+
+*pospago l es libre y c es controlado
+clear all
+use "ift\lin_tel_mov.dta"
+keep if year>=2014
+gen pos = l_pospagoc_e + l_pospagol_e
+collapse (sum) tel_mov=l_total_e prepago=l_prepago_e ///
+pospago=pos, by(grupo date)
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+save "tmp\parti_tel_mov.dta", replace
+
+clear all
+use "ift\lin_int_mov.dta"
+keep if year>=2014
+gen pos = l_pospagoc_e + l_pospagol_e
+collapse (sum) int_mov=l_total_e prepago=l_prepago_e ///
+pospago=pos, by(grupo date)
+format pospago %12.0g
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+save "tmp\parti_int_mov.dta", replace
+
+clear all
+use "ift\lin_tel_fija.dta"
+keep if year>=2014
+collapse (sum) tel_fija=l_total_e resid=l_residencial_e ///
+noresid=l_no_residencial_e, by(grupo date)
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+save "tmp\parti_tel_fija.dta", replace
+
+
+clear all
+use "tmp\parti_tel_fija.dta"
+keep date grupo tel_fija
+merge 1:1 date grupo using "tmp\parti_int_mov.dta", keepusing(int_mov) nogen
+merge 1:1 date grupo using "tmp\parti_tel_mov.dta", keepusing(tel_mov) nogen
+merge 1:1 date grupo using "tmp\parti_int_fija.dta", keepusing(int_fija) nogen
+merge 1:1 date grupo using "tmp\parti_tv_rest.dta", keepusing(tv_rest) nogen
+
+tab date
+tab grupo
+
+foreach perro in tel_fija int_mov tel_mov int_fija tv_rest {
+	replace `perro' = `perro'/1000000
+}
+
+rename tel_fija var1
+rename int_mov var2
+rename tel_mov var3
+rename int_fija var4
+rename tv_rest var5
+
+reshape long var, i(date grupo) j(tipo) string
+destring tipo, replace
+reshape wide var, i(date tipo) j(grupo) string
+
+egen total = rowtotal(varAIRBUS varAIRECABLE varALESTRA varAMERICA_MOVIL varATnT varAXESAT varAXTEL varBUENO_CELL varCABLECOM varCABLEVISION_RED varCELMAX varCIERTO varCONVERGIA varDISH_MVS varEDILAR varELARA_COMUNICACIONES varFLASH_MOBILE varFREEDOM varGRUPO_TELEVISA varHER_MOBILE varIENTC varIUSACELL_UNEFON varMARCATEL varMAXCOM varMAZ_TIEMPO varMEGACABLE_MCM varMEGATEL varMIIO varNETWEY varNEUS_MOBILE varNEXTEL varOUI varQBO_CEL varSIMPATI varSIMPLII varSIX_MOVIL varSTARGROUP varTELEFONICA varTELEVISION_INTERNACIONAL varTOKA_MOVIL varTOTALPLAY varTRANSTELCO varTV_REY varULTRAVISION varVADSA varVDT_COMUNICACIONES varVIRGIN_MOBILE varWEEX)
+
+foreach perro in varAIRBUS varAIRECABLE varALESTRA varAMERICA_MOVIL varATnT varAXESAT varAXTEL varBUENO_CELL varCABLECOM varCABLEVISION_RED varCELMAX varCIERTO varCONVERGIA varDISH_MVS varEDILAR varELARA_COMUNICACIONES varFLASH_MOBILE varFREEDOM varGRUPO_TELEVISA varHER_MOBILE varIENTC varIUSACELL_UNEFON varMARCATEL varMAXCOM varMAZ_TIEMPO varMEGACABLE_MCM varMEGATEL varMIIO varNETWEY varNEUS_MOBILE varNEXTEL varOUI varQBO_CEL varSIMPATI varSIMPLII varSIX_MOVIL varSTARGROUP varTELEFONICA varTELEVISION_INTERNACIONAL varTOKA_MOVIL varTOTALPLAY varTRANSTELCO varTV_REY varULTRAVISION varVADSA varVDT_COMUNICACIONES varVIRGIN_MOBILE varWEEX {
+	replace `perro' = (`perro'/total)*100
+}
+
+gen aver=date
+sort date
+graph bar varAMERICA_MOVIL varATnT varDISH_MVS varGRUPO_TELEVISA varMEGACABLE_MCM varTELEFONICA varTOTALPLAY if date==719, over(tipo, relabel(1 "Tel. Fija" 2 "Int. Mov." 3 "Tel. Mov." 4 "BAF" 5 "TV Rest.")) stack ///
+title("Participación de principales GIE por mercado.") ///
+subtitle("Con base en líneas o suscriptores. Diciembre de 2019.") ///
+ytitle("Participación (%)") ysize(5) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "AMX") label(2 "AT&T") label(3 "Dish") label(4 "GTV") label(5 "MCM") label(6 "Telefonica") label(7 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.") blabel(total, format(%3.0f) c(black))
+
+graph export "results\part-por-serv.png", as(png) wid(1500) replace
+
 
 
 
