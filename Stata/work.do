@@ -1001,44 +1001,39 @@ graph export "results\part-por-serv.png", as(png) wid(1500) replace
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+************************************************************************ ENDUTIH
 clear all
-use "ift\acc_int_fija.dta"
-xtset k_acceso_internet date
-xtline a_total, ov
+use "$dir\db\2015-usuarios.dta"
+destring D_R upm VIV_SEL hogar nrenelegi P* UPM_DIS EST_DIS ent aream, replace
+
+*esto era solo para checar que no hubiera missing en esta variable porque sinoooooooooo estariamos mal
+tab FAC_PER, m
+
+*Dispone de celuar 
+tab P8_1 [fw = FAC_PER],  m
+
+*Dispone de celular por entidad
+tab ent P8_1 [fw = FAC_PER]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
