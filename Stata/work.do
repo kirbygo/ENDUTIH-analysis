@@ -1014,49 +1014,90 @@ svyset upm [pweight=FAC_HOG], strata(EST_DIS)
 svy : total P5_1, over(TV_rest) cformat(%9.0fc) level(90)
 
 
-gen TV_tipo=0
-*1 es analógica
-replace TV_tipo=1 if P4_1_2==1
-*2 es digital
-replace TV_tipo=2 if P4_1_4==1
-*3 es ambas
-replace TV_tipo=3 if P4_1_2==1 & P4_1_4==1
-
-svy : proportion TV_rest
 
 
+clear all
+use "$dir\db\2019-hogares.dta"
+keep upm FAC_HOG EST_DIS P5_1
+destring upm FAC_HOG EST_DIS P5_1, replace
+gen year=2019
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2019-hog.dta", replace
 
-*esto era solo para checar que no hubiera missing en esta variable porque si noooooooooo estariamos mal
-tab FAC_HOG, m
+clear all
+use "$dir\db\2018-hogares.dta"
+keep upm FAC_HOG EST_DIS P5_1
+destring upm FAC_HOG EST_DIS P5_1, replace
+gen year=2018
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2018-hog.dta", replace
 
-*1 si tienes TV paga
-tab P5_1 [fw = FAC_HOG],  m
+clear all
+use "$dir\db\2017-hogares.dta"
+keep upm FAC_HOG EST_DIS P5_1
+destring upm FAC_HOG EST_DIS P5_1, replace
+gen year=2017
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2017-hog.dta", replace
+
+*2016 es diferente a las nuevas
+clear all
+use "$dir\db\2016-hogares.dta"
+keep UPM_DIS factor EST_DIS P5_1_1 P5_1_2
+rename UPM_DIS upm
+rename factor FAC_HOG
+gen P5_1 = 2
+replace P5_1 = 1 if P5_1_1=="1" | P5_1_2=="1"
+destring upm FAC_HOG EST_DIS P5_1, replace
+keep upm FAC_HOG EST_DIS P5_1
+gen year=2016
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2016-hog.dta", replace
+
+*2015 es también diferente a 2016 y a las nuevas
+clear all
+use "$dir\db\2015-hogares.dta"
+keep UPM_DIS factor EST_DIS P4_1_7 P4_1_8
+rename UPM_DIS upm
+rename factor FAC_HOG
+gen P5_1 = 2
+replace P5_1 = 1 if P4_1_7=="1" | P4_1_8=="1"
+destring upm FAC_HOG EST_DIS P5_1, replace
+keep upm FAC_HOG EST_DIS P5_1
+gen year=2015
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2015-hog.dta", replace
 
 
+clear all
+use "$dir\tmp\2019-hog.dta"
+append using "$dir\tmp\2018-hog.dta"
+append using "$dir\tmp\2017-hog.dta"
+append using "$dir\tmp\2016-hog.dta"
+append using "$dir\tmp\2015-hog.dta"
 
+gen TV_rest=0
+replace TV_rest=1 if P5_1==1
 
+svyset upm [pweight=FAC_HOG], strata(EST_DIS)
 
+svy : total P5_1, over(TV_rest year) cformat(%9.0fc) level(90) 
 
+svy, subpop(TV_rest) : total P5_1, over(year) cformat(%9.0fc) level(90)
 
+marginsplot, title("Hogares con TV de paga.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
+svy : proportion P5_1, over(year) level(90)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+marginsplot, x(year) title("Hogares con TV de paga.") plot(P5_1) ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 
 
