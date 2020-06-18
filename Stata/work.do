@@ -1002,40 +1002,27 @@ graph export "results\part-por-serv.png", as(png) wid(1500) replace
 
 
 ************************************************************************ ENDUTIH
-clear all
-use "$dir\db\2018-hogares.dta"
-destring upm VIV_SEL hogar P* ent CD_ENDUTIH FAC_HOG UPM_DIS EST_DIS dominio tloc estrato, replace
-
-gen TV_rest=0
-replace TV_rest=1 if P5_1==1
-
-svyset upm [pweight=FAC_HOG], strata(EST_DIS)
-
-svy : total P5_1, over(TV_rest) cformat(%9.0fc) level(90)
-
-
-
-
+*Año por año para juntarlos
 clear all
 use "$dir\db\2019-hogares.dta"
-keep upm FAC_HOG EST_DIS P5_1
-destring upm FAC_HOG EST_DIS P5_1, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5
+destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
 gen year=2019
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2019-hog.dta", replace
 
 clear all
 use "$dir\db\2018-hogares.dta"
-keep upm FAC_HOG EST_DIS P5_1
-destring upm FAC_HOG EST_DIS P5_1, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5
+destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
 gen year=2018
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2018-hog.dta", replace
 
 clear all
 use "$dir\db\2017-hogares.dta"
-keep upm FAC_HOG EST_DIS P5_1
-destring upm FAC_HOG EST_DIS P5_1, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5
+destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
 gen year=2017
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2017-hog.dta", replace
@@ -1043,13 +1030,14 @@ save "$dir\tmp\2017-hog.dta", replace
 *2016 es diferente a las nuevas
 clear all
 use "$dir\db\2016-hogares.dta"
-keep UPM_DIS factor EST_DIS P5_1_1 P5_1_2
+keep UPM_DIS factor EST_DIS P5_1_1 P5_1_2 P4_6
 rename UPM_DIS upm
 rename factor FAC_HOG
+rename P4_6 P4_5
 gen P5_1 = 2
 replace P5_1 = 1 if P5_1_1=="1" | P5_1_2=="1"
-destring upm FAC_HOG EST_DIS P5_1, replace
-keep upm FAC_HOG EST_DIS P5_1
+destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5
 gen year=2016
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2016-hog.dta", replace
@@ -1057,18 +1045,20 @@ save "$dir\tmp\2016-hog.dta", replace
 *2015 es también diferente a 2016 y a las nuevas
 clear all
 use "$dir\db\2015-hogares.dta"
-keep UPM_DIS factor EST_DIS P4_1_7 P4_1_8
+keep UPM_DIS factor EST_DIS P4_1_7 P4_1_8 P4_6
 rename UPM_DIS upm
 rename factor FAC_HOG
+rename P4_6 P4_5
 gen P5_1 = 2
 replace P5_1 = 1 if P4_1_7=="1" | P4_1_8=="1"
-destring upm FAC_HOG EST_DIS P5_1, replace
-keep upm FAC_HOG EST_DIS P5_1
+destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5
 gen year=2015
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2015-hog.dta", replace
 
 
+************** Unión
 clear all
 use "$dir\tmp\2019-hog.dta"
 append using "$dir\tmp\2018-hog.dta"
@@ -1076,29 +1066,72 @@ append using "$dir\tmp\2017-hog.dta"
 append using "$dir\tmp\2016-hog.dta"
 append using "$dir\tmp\2015-hog.dta"
 
+*Variables necesarias
+*TV rest
 gen TV_rest=0
 replace TV_rest=1 if P5_1==1
 
+*Tiene internet
+replace P4_5 = 0 if P4_5==.
+gen intiti = 1
+replace intiti = 0 if P4_5==0
+
+*Tiene BAF
+gen fija=0
+replace fija=1 if P4_5==1 | P4_5==3
+
+*Tiene BAM
+gen movil=0
+replace movil=1 if P4_5==2 | P4_5==3
+
+
+*Declaramos la survey
 svyset upm [pweight=FAC_HOG], strata(EST_DIS)
 
-svy : total P5_1, over(TV_rest year) cformat(%9.0fc) level(90) 
 
-svy, subpop(TV_rest) : total P5_1, over(year) cformat(%9.0fc) level(90)
-
-marginsplot, title("Hogares con TV de paga.") ///
+************** Graphs
+*TV Restringida
+svy : total TV_rest, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con TV restringida.") ///
 ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
-svy : proportion P5_1, over(year) level(90)
+graph export "results\tvrestnum.png", as(png) wid(1500) replace name(_mp_2)
 
-marginsplot, x(year) title("Hogares con TV de paga.") plot(P5_1) ///
-ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+*Porcentajes
+svy : proportion TV_rest , over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con TV restringida.") ///
+subtitle("TV restringida (%).") gr(TV_rest) ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
+graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
+
+
+*BAF
+svy : total fija, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con BAF.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\bafnum.png", as(png) wid(1500) replace name(_mp_2)
+
+*Porcentajes
+svy : proportion fija , over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con BAF.") ///
+subtitle("BAF (%).") gr(fija) ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\bafporc.png", as(png) wid(1500) replace name(_mp_2)
 
 
 
@@ -1107,6 +1140,22 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 
 
+
+
+
+
+
+svy : total intiti, over(year) cformat(%9.0fc) level(90)
+
+
+
+svy : proportion fija movil, over(year) level(90) percent
+
+marginsplot, x(year) title("Porcentaje de hogares con TV restringida.") ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 
 
