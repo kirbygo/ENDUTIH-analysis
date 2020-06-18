@@ -1003,20 +1003,34 @@ graph export "results\part-por-serv.png", as(png) wid(1500) replace
 
 ************************************************************************ ENDUTIH
 clear all
-use "$dir\db\2015-usuarios.dta"
-destring D_R upm VIV_SEL hogar nrenelegi P* UPM_DIS EST_DIS ent aream, replace
+use "$dir\db\2018-hogares.dta"
+destring upm VIV_SEL hogar P* ent CD_ENDUTIH FAC_HOG UPM_DIS EST_DIS dominio tloc estrato, replace
 
-*esto era solo para checar que no hubiera missing en esta variable porque sinoooooooooo estariamos mal
-tab FAC_PER, m
+gen TV_rest=0
+replace TV_rest=1 if P5_1==1
 
-*Dispone de celuar 
-tab P8_1 [fw = FAC_PER],  m
+svyset upm [pweight=FAC_HOG], strata(EST_DIS)
 
-*Dispone de celular por entidad
-tab ent P8_1 [fw = FAC_PER]
+svy : total P5_1, over(TV_rest) cformat(%9.0fc) level(90)
 
 
+gen TV_tipo=0
+*1 es analógica
+replace TV_tipo=1 if P4_1_2==1
+*2 es digital
+replace TV_tipo=2 if P4_1_4==1
+*3 es ambas
+replace TV_tipo=3 if P4_1_2==1 & P4_1_4==1
 
+svy : proportion TV_rest
+
+
+
+*esto era solo para checar que no hubiera missing en esta variable porque si noooooooooo estariamos mal
+tab FAC_HOG, m
+
+*1 si tienes TV paga
+tab P5_1 [fw = FAC_HOG],  m
 
 
 
