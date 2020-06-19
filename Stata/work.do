@@ -1001,7 +1001,7 @@ graph export "results\part-por-serv.png", as(png) wid(1500) replace
 
 
 
-************************************************************************ ENDUTIH
+**************************************************************** ENDUTIH Hogares
 *Año por año para juntarlos
 *Homogenizo todo a 2018 (parece ser igual a 2017):
 * P5_1 tv-rest: 1 sí 2 no
@@ -1267,22 +1267,32 @@ replace grupo=7 if TV_rest==1 & ifija==1 & tfija==1
 
 gen tiene=0
 replace tiene=1 if grupo>0
+gen aver=1
 
-svy : total tiene, over(grupo year) cformat(%9.0fc) level(90)
-marginsplot, title("Hogares con servicios de telecom.") x(year) ///
-ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+svy : total aver, over(grupo year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con servicios de telecom.") x(year) plot(grupo, label("Sin servicios" "TV rest" "BAF" "Tel. fijo" "TV + BAF" "TV + tel" "BAF + tel" "Los 3")) ///
+ytitle("Número de hogares") ysize(4) ylabel(#15 , format(%15.0fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
+graph export "results\todasnum.png", as(png) wid(1500) replace
+
+
+svy : proportion grupo, over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con servicios de telecom.") ///
+subtitle("Por grupos d servicios con que cuentan.") plot(grupo, lab("Sin servicios" "TV rest" "BAF" "Tel. fijo" "TV + BAF" "TV + tel" "BAF + tel" "Los 3")) ///
+ytitle("Porcentaje de hogares (%)") ysize(4) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\todasporc.png", as(png) wid(1500) replace
 
 
 
 
-
-
-
-
+*************************************************************** ENDUTIH Usuarios
 
 
 
