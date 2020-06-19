@@ -1003,26 +1003,34 @@ graph export "results\part-por-serv.png", as(png) wid(1500) replace
 
 ************************************************************************ ENDUTIH
 *Año por año para juntarlos
+*Homogenizo todo a 2018 (parece ser igual a 2017):
+* P5_1 tv-rest: 1 sí 2 no
+* P4_5 internet: 1 fija 2 movil 3 ambas 9 no sé
+* P5_4 telf fijo: 1 sí 2 no
+* P4_1_5 telf cel: 1 sí 2 no
+
+*2019 es dif a 2018
 clear all
 use "$dir\db\2019-hogares.dta"
-keep upm FAC_HOG EST_DIS P5_1 P4_5
-destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5 P5_5 P4_1_5
+rename P5_5 P5_4
+destring upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5, replace
 gen year=2019
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2019-hog.dta", replace
 
 clear all
 use "$dir\db\2018-hogares.dta"
-keep upm FAC_HOG EST_DIS P5_1 P4_5
-destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5
+destring upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5, replace
 gen year=2018
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2018-hog.dta", replace
 
 clear all
 use "$dir\db\2017-hogares.dta"
-keep upm FAC_HOG EST_DIS P5_1 P4_5
-destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5
+destring upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5, replace
 gen year=2017
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2017-hog.dta", replace
@@ -1030,14 +1038,15 @@ save "$dir\tmp\2017-hog.dta", replace
 *2016 es diferente a las nuevas
 clear all
 use "$dir\db\2016-hogares.dta"
-keep UPM_DIS factor EST_DIS P5_1_1 P5_1_2 P4_6
+keep UPM_DIS factor EST_DIS P5_1_1 P5_1_2 P4_6 P5_1B P4_1_5
 rename UPM_DIS upm
 rename factor FAC_HOG
 rename P4_6 P4_5
+rename P5_1B P5_4
 gen P5_1 = 2
 replace P5_1 = 1 if P5_1_1=="1" | P5_1_2=="1"
-destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
-keep upm FAC_HOG EST_DIS P5_1 P4_5
+destring upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5
 gen year=2016
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2016-hog.dta", replace
@@ -1045,14 +1054,17 @@ save "$dir\tmp\2016-hog.dta", replace
 *2015 es también diferente a 2016 y a las nuevas
 clear all
 use "$dir\db\2015-hogares.dta"
-keep UPM_DIS factor EST_DIS P4_1_7 P4_1_8 P4_6
+keep UPM_DIS factor EST_DIS P4_1_7 P4_1_8 P4_6 P4_1_2 P4_1_3 P4_1_9
 rename UPM_DIS upm
 rename factor FAC_HOG
 rename P4_6 P4_5
+rename P4_1_9 P4_1_5
+gen P5_4 =2
+replace P5_4 = 1 if P4_1_2=="1" | P4_1_3=="1"
 gen P5_1 = 2
 replace P5_1 = 1 if P4_1_7=="1" | P4_1_8=="1"
-destring upm FAC_HOG EST_DIS P5_1 P4_5, replace
-keep upm FAC_HOG EST_DIS P5_1 P4_5
+destring upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5, replace
+keep upm FAC_HOG EST_DIS P5_1 P4_5 P5_4 P4_1_5
 gen year=2015
 replace EST_DIS = EST_DIS + year*10000
 save "$dir\tmp\2015-hog.dta", replace
@@ -1072,18 +1084,29 @@ gen TV_rest=0
 replace TV_rest=1 if P5_1==1
 
 *Tiene internet
-replace P4_5 = 0 if P4_5==.
 gen intiti = 1
-replace intiti = 0 if P4_5==0
+replace intiti = 0 if P4_5==.
 
-*Tiene BAF
-gen fija=0
-replace fija=1 if P4_5==1 | P4_5==3
+*BAF
+gen ifija=0
+replace ifija=1 if P4_5==1 | P4_5==3
 
-*Tiene BAM
-gen movil=0
-replace movil=1 if P4_5==2 | P4_5==3
+*BAM
+gen imovil=0
+replace imovil=1 if P4_5==2 | P4_5==3
 
+*telef fija
+gen tfija=0
+replace tfija=1 if P5_4==1
+
+*telef movil
+gen tmovil=0
+replace tmovil=1 if P4_1_5==1
+
+* P5_1 tv-rest: 1 sí 2 no
+* P4_5 internet: 1 fija 2 movil 3 ambas 9 no sé
+* P5_4 telf fijo: 1 sí 2 no
+* P4_1_5 telf cel: 1 sí 2 no
 
 *Declaramos la survey
 svyset upm [pweight=FAC_HOG], strata(EST_DIS)
@@ -1098,7 +1121,8 @@ scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
-graph export "results\tvrestnum.png", as(png) wid(1500) replace name(_mp_2)
+graph export "results\tvrestnum.png", as(png) wid(1500) replace
+graph close
 
 *Porcentajes
 svy : proportion TV_rest , over(year) level(90) percent
@@ -1110,86 +1134,146 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
-
+graph close
 
 *BAF
-svy : total fija, over(year) cformat(%9.0fc) level(90)
+svy : total ifija, over(year) cformat(%9.0fc) level(90)
 marginsplot, title("Hogares con BAF.") ///
 ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
-graph export "results\bafnum.png", as(png) wid(1500) replace name(_mp_2)
+graph export "results\bafnum.png", as(png) wid(1500) replace
+graph close
 
 *Porcentajes
-svy : proportion fija , over(year) level(90) percent
+svy : proportion ifija , over(year) level(90) percent
 marginsplot, x(year) title("Porcentaje de hogares con BAF.") ///
-subtitle("BAF (%).") gr(fija) ///
+subtitle("BAF (%).") gr(ifija) ///
 ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 graph export "results\bafporc.png", as(png) wid(1500) replace name(_mp_2)
+graph close
 
+*BAM
+svy : total imovil, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con BAM.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
+graph export "results\bamnum.png", as(png) wid(1500) replace
+graph close
 
-
-
-
-
-
-
-
-
-
-
-svy : total intiti, over(year) cformat(%9.0fc) level(90)
-
-
-
-svy : proportion fija movil, over(year) level(90) percent
-
-marginsplot, x(year) title("Porcentaje de hogares con TV restringida.") ///
+*Porcentajes
+svy : proportion imovil, over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con BAM.") ///
+subtitle("BAM (%).") gr(imovil) ///
 ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
+graph export "results\bamporc.png", as(png) wid(1500) replace name(_mp_2)
+graph close
+
+*tel fija
+svy : total tfija, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con telefonía fija.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\telfijnum.png", as(png) wid(1500) replace
+graph close
+
+*Porcentajes
+svy : proportion tfija , over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con telefonía fija.") ///
+subtitle("Telefonía fija (%).") gr(tfija) ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\telfijporc.png", as(png) wid(1500) replace name(_mp_2)
+graph close
+
+*tel movil
+svy : total tmovil, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con teléfono celular.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\telmovnum.png", as(png) wid(1500) replace
+graph close
+
+*Porcentajes
+svy : proportion tmovil, over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con teléfono celular.") ///
+subtitle("Hogares con al menos un integrante con teléfono celular (%).") gr(tmovil) ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\telmovporc.png", as(png) wid(1500) replace name(_mp_2)
+graph close
 
 
 
+*JUNTAS
+svy : total TV_rest ifija imovil tfija tmovil, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con servicios de telecom.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\juntasnum.png", as(png) wid(1500) replace
+
+*NO HALLE MANERA DE JUNTAR EN PORCENTAJES :(
+*Porcentajes
+*
+svy : proportion TV_rest ifija imovil tfija tmovil, over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con servicios de telecom.") ///
+subtitle("Por servicio.") plot(TV_rest ifija imovil tfija tmovil, lab("Sin TV rest" "Con TV rest" "Sin BAF" "Con BAF" "Sin BAM" "Con BAM" "Sin tel. fijo" "Con tel.fijo" "Sin tel. mov." "Con tel. mov.")) ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\juntasporc.png", as(png) wid(1500) replace
 
 
+* TV_rest ifija tfija
+*GRUPO: 0 nada, 1 tvrest 2 ifijo 3 tfijo 4 tvrestifijo 5 tvresttfijo 6 ifijatfija 7 todos
+gen grupo = 0
+replace grupo=1 if TV_rest==1
+replace grupo=2 if ifija==1
+replace grupo=3 if tfija==1
+replace grupo=4 if TV_rest==1 & ifija==1
+replace grupo=5 if TV_rest==1 & tfija==1
+replace grupo=6 if tfija==1 & ifija==1
+replace grupo=7 if TV_rest==1 & ifija==1 & tfija==1
 
+gen tiene=0
+replace tiene=1 if grupo>0
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+svy : total tiene, over(grupo year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con servicios de telecom.") x(year) ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 
 
