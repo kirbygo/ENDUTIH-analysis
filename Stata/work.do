@@ -1253,6 +1253,22 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 graph export "results\juntasporc.png", as(png) wid(1500) replace
 
+gen TV_rest1 = TV_rest*100
+gen ifija1 = ifija*100
+gen imovil1 = imovil*100
+gen tfija1 = tfija*100
+gen tmovil1 = tmovil*100
+
+svy : mean TV_rest1 ifija1 imovil1 tfija1 tmovil1, over(year) level(90)
+marginsplot, x(year) title("Porcentaje de hogares con servicios de telecom.") ///
+subtitle("Por servicio.") plot( , lab("TV restringida" "Internet fijo" "Internet móvil" "Telefonía fija" "Telefonía móvil")) ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\juntasporcBUENA.png", as(png) wid(1500) replace
+
 
 * TV_rest ifija tfija
 *GRUPO: 0 nada, 1 tvrest 2 ifijo 3 tfijo 4 tvrestifijo 5 tvresttfijo 6 ifijatfija 7 todos
@@ -1293,85 +1309,236 @@ graph export "results\todasporc.png", as(png) wid(1500) replace
 
 
 *************************************************************** ENDUTIH Usuarios
+*Año por año para juntarlos
+*Homogenizo todo:
+*2019 EDAD P7_1 (usuarios de internet, si 2 entonces miss val lo siguiente, redundante)
+*   P7_11_2 (audiovisuales pago)  P7_11_3 (audiovisuales gratuitos)
+*   P7_11_7 (canales abiertos por internet, solo 2019 mejor no lo meto)
 
+*2019 es dif a 2018
+clear all
+use "$dir\db\2019-usuarios.dta"
+keep UPM_DIS FAC_PER EST_DIS edad P7_11_2 P7_11_3
+destring UPM_DIS FAC_PER EST_DIS edad P7_11_2 P7_11_3, replace
+gen year=2019
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2019-usu.dta", replace
 
+clear all
+use "$dir\db\2018-usuarios.dta"
+keep UPM_DIS FAC_PER EST_DIS edad P7_11_2 P7_11_3
+destring UPM_DIS FAC_PER EST_DIS edad P7_11_2 P7_11_3, replace
+gen year=2018
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2018-usu.dta", replace
 
+*2017 no trae EST_DIS. Hay que pegarlo de residentes
+clear all
+use "$dir\db\2017-residentes.dta"
+keep upm VIV_SEL hogar N_REN EST_DIS
+destring upm VIV_SEL hogar N_REN EST_DIS, replace
+save "$dir\tmp\2017-res.dta", replace
 
+clear all
+use "$dir\db\2017-usuarios.dta"
+destring upm VIV_SEL hogar N_REN, replace
+merge 1:1 upm VIV_SEL hogar N_REN using "$dir\tmp\2017-res.dta"
+keep if _merge==3
+drop _merge
 
+keep upm FAC_PER EST_DIS edad P7_10_2 P7_10_3
+rename P7_10_2 P7_11_2
+rename P7_10_3 P7_11_3
+rename upm UPM_DIS
+destring UPM_DIS FAC_PER EST_DIS edad P7_11_2 P7_11_3, replace
+gen year=2017
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2017-usu.dta", replace
 
+*2016
+clear all
+use "$dir\db\2016-usuarios.dta"
+keep UPM_DIS FAC_PER EST_DIS edad P7_8_26 P7_8_27
+rename P7_8_26 P7_11_2
+rename P7_8_27 P7_11_3
+destring UPM_DIS FAC_PER EST_DIS edad P7_11_2 P7_11_3, replace
+gen year=2016
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2016-usu.dta", replace
 
+*2015 NO TIENE EDAD. Pegar de residentes
+clear all
+use "$dir\db\2015-residentes.dta"
+keep upm VIV_SEL hogar nren edad
+destring upm VIV_SEL hogar nren edad, replace
+save "$dir\tmp\2015-res.dta", replace
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**************************HOGARES QUE DISPONEN DE TELEVISOR*********************************
-*esto era solo para checar que no hubiera missing en esta variable porque sinoooooooooo estariamos mal
-tab hogar, m
-
-*televisor analógico
-tab P4_1_2 [fw = factor], m
-
-*televisor digital
-tab P4_1_4 [fw = factor]
-
-*ambos
-gen tv2tipos = P4_1_2 * P4_1_4
-tab tv2tipos [fw = factor]
-
-** tv2tipos=1 significa que tienen ambos tipos de televisores; tv2tipos=2 significa que tienen solo 1 tipo de televisor; tv2tipos=4 significa que no tienen de ningun tipo.
-*los que tienen televisor
-tab tv2tipos if tv2tipos != 4 [fw = factor]
-
-*de los que tienen solo un tipo de televisor cuáles tienen analógica
-tab P4_1_2 if tv2tipos == 2 [fw = factor]
-
-*de los que tienen solo un tipo de televisor cuáles tienen digital
-tab P4_1_4 if tv2tipos == 2 [fw = factor]
-
-
-***************************USUARIOS DE TELEFONÍA CELULAR POR ENTIDAD************************
 clear all
 use "$dir\db\2015-usuarios.dta"
-destring D_R upm VIV_SEL hogar nrenelegi P* UPM_DIS EST_DIS ent aream, replace
+destring upm VIV_SEL hogar nrenelegi, replace
+rename nrenelegi nren
+merge 1:1 upm VIV_SEL hogar nren using "$dir\tmp\2015-res.dta"
+keep if _merge==3
+drop _merge
 
-*esto era solo para checar que no hubiera missing en esta variable porque sinoooooooooo estariamos mal
-tab FAC_PER, m
+keep UPM_DIS FAC_PER EST_DIS edad P7_8_21 P7_8_22
+rename P7_8_21 P7_11_2
+rename P7_8_22 P7_11_3
+destring UPM_DIS FAC_PER EST_DIS edad P7_11_2 P7_11_3, replace
+gen year=2015
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2015-usu.dta", replace
 
-*Dispone de celuar 
-tab P8_1 [fw = FAC_PER],  m
 
-*Dispone de celular por entidad
-tab ent P8_1 [fw = FAC_PER]
+************** Unión
+clear all
+use "$dir\tmp\2019-usu.dta"
+append using "$dir\tmp\2018-usu.dta"
+append using "$dir\tmp\2017-usu.dta"
+append using "$dir\tmp\2016-usu.dta"
+append using "$dir\tmp\2015-usu.dta"
 
+*Variables necesarias
+*gpo edad
+*0 - no especif
+*1 - 6 a 15 años
+*2 - 16 a 35 años
+*3 - 36 a 55 años
+*4 - 56 o más
+gen age = 0 if edad == 98
+replace age = 1 if edad>=6 & edad<=15
+replace age = 2 if edad>=16 & edad<=35
+replace age = 3 if edad>=36 & edad<=55
+replace age = 4 if edad>=56 & edad<=97
+
+*usuarios internet
+*0 - no usa internet
+*1 - sí usa
+gen usa = 0 if P7_11_2==.
+replace usa = 1 if P7_11_2!=.
+
+*de pago
+*. - no usa internet
+*0 - no usa pago
+*1 - sí usa pago
+gen pago = 0 if P7_11_2==.
+replace pago = 0 if P7_11_2==2
+replace pago = 1 if P7_11_2==1
+
+*gratis
+*. - no usa internet
+*0 - no usa gratis
+*1 - sí usa gratis
+gen gratis = 0 if P7_11_3==.
+replace gratis = 0 if P7_11_3==2
+replace gratis = 1 if P7_11_3==1
+
+*both
+*0 - no usa internet
+*1 - no lo usa por entretenimiento
+*2 - sí usa solo gratis
+*3 - sí usa solo pago
+*4 - usa ambos
+gen both = .
+replace both = 0 if P7_11_2==. & P7_11_3==.
+replace both = 1 if P7_11_2==2 & P7_11_3==2
+replace both = 2 if P7_11_2==2 & P7_11_3==1
+replace both = 3 if P7_11_2==1 & P7_11_3==2
+replace both = 4 if P7_11_2==1 & P7_11_3==1
+
+gen uno = 1
+
+*Declaramos la survey
+svyset UPM_DIS [pweight=FAC_PER], strata(EST_DIS)
+
+************** Graphs
+*Usuarios de internet
+svy : total usa, over(age year) cformat(%9.0fc) level(90)
+marginsplot , x(year) plot(age, label("No especif." "De 6 a 15 años" "De 16 a 35 años" "De 36 a 55" "56 años o más")) title("Usuarios de internet, por rango de edad.") ///
+ytitle("Número de usuarios") ysize(4) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\usunum.png", as(png) wid(1500) replace
+graph close
+
+*Esto es dificilmente interpretable
+*Es el porcentaje de usuarios de internet con respecto de internet de los entrevistados
+*Pero entrevistan a los usuarios de telecom (por lo que estos porcentajes salen altos)
+/*
+gen usa1=usa*100
+svy : mean usa1, over(age year) level(90)
+marginsplot, x(year) title("Porcentaje de usuarios de internet, por rango de edad.") ///
+plot(age, lab("No especif." "De 6 a 15 años" "De 16 a 35 años" "De 36 a 55" "56 años o más")) ///
+ytitle("Porcentaje de usuarios (%)") ysize(4) ylabel(#15 , format(%5.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\usuporc.png", as(png) wid(1500) replace
+graph close
+*/
+
+*pago
+svy : total pago, over(age year) cformat(%9.0fc) level(90)
+marginsplot , x(year) plot(age, label("No especif." "De 6 a 15 años" "De 16 a 35 años" "De 36 a 55" "56 años o más")) title("Uso de streaming de paga en internet.") ///
+ytitle("Usuarios") ysize(4) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\pagonum.png", as(png) wid(1500) replace
+graph close
+
+*porcentaje
+gen pago1=pago*100
+svy, subpop (if usa==1) : mean pago1, over(age year) level(90)
+marginsplot, x(year) title("Porcentaje de usuarios de streaming de paga, por rango de edad.") ///
+subtitle("Con respecto del total de usuarios de internet.") ///
+plot(age, lab("No especif." "De 6 a 15 años" "De 16 a 35 años" "De 36 a 55" "56 años o más")) ///
+ytitle("Porcentaje de usuarios (%)") ysize(4) ylabel(#15 , format(%5.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\pagoporc.png", as(png) wid(1500) replace
+graph close
+
+*gratis
+svy : total gratis, over(age year) cformat(%9.0fc) level(90)
+marginsplot , x(year) plot(age, label("No especif." "De 6 a 15 años" "De 16 a 35 años" "De 36 a 55" "56 años o más")) title("Uso de streaming gratuito en internet.") ///
+ytitle("Usuarios") ysize(4) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\granum.png", as(png) wid(1500) replace
+graph close
+
+*porcentaje
+gen gratis1=gratis*100
+svy, subpop (if usa==1) : mean gratis1, over(age year) level(90)
+marginsplot, x(year) title("Porcentaje de usuarios de streaming gratuito, por rango de edad.") ///
+subtitle("Con respecto del total de usuarios de internet.") ///
+plot(age, lab("No especif." "De 6 a 15 años" "De 16 a 35 años" "De 36 a 55" "56 años o más")) ///
+ytitle("Porcentaje de usuarios (%)") ysize(4) ylabel(#15 , format(%5.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\graporc.png", as(png) wid(1500) replace
+graph close
+
+*Grupos de uso
+svy : proportion both, over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de usuarios según tipo de streaming, por rango de edad.") ///
+plot(both, lab("No usa internet" "No usa serv. de streaming" "Solo servicios gratuitos" "Solo servicios de pago" "Ambos tipos")) ///
+ytitle("Porcentaje de usuarios (%)") ysize(4) ylabel(#15 , format(%5.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\both.png", as(png) wid(1500) replace
+graph close
 
