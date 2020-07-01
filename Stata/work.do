@@ -63,6 +63,10 @@ copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_MARKET_SHARE_TVRES_ITE_VA.c
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_SUS_TVRES_ITE_VA.csv" "sus_tv_rest.csv"
 *suscripciones Banda ancha fija
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_SUS_BAF_ITE_VA.csv" "sus_int_fija.csv"
+*IHH TV restringida
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_IHH_TVRES_ITE_VA.csv" "ihh_tv_rest.csv"
+*Penetración TV Rest
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_PENETRACION_H_TVRES_ITE_VA.csv" "pene_tv_rest.csv"
 *OJO. Parece ser que ya no funciona programático ahora :(
 *Habrá de hacerse manualmente :(
 *Te odio IFT !!!
@@ -316,6 +320,49 @@ duplicates r date concesionario
 
 save "ift\sus_int_fija.dta", replace
 
+***********************************10
+clear all
+import delimited "suscrip\ihh_tv_rest.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
+
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
+
+sort date
+*Ojo, de 1996 a 2019 es Trimestral.
+duplicates r date
+*Info por trimestre.
+
+save "ift\ihh_tv_rest.dta", replace
+
+***********************************11
+clear all
+import delimited "suscrip\pene_tv_rest.csv", parselocale(es_MX) 
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
+
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
+
+sort date
+*Ojo, de 1996 a 2012 es trimestral, de 2013 a 2019 es MENSUAL
+duplicates r date
+*Info por fecha.
+
+save "ift\pene_tv_rest.dta", replace
 
 
 ********************************************************************************
@@ -999,6 +1046,97 @@ note("Nota: Elaboración propia con información del IFT, BIT.") blabel(total, f
 
 graph export "results\part-por-serv.png", as(png) wid(1500) replace
 
+
+clear all
+use "ift\pene_tv_rest.dta"
+keep if year>=2013
+
+graph hbar p_h_tvres_e, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
+title("Penetración de TV restringida por cada 100 hogares (mensual, 2013-2019)") ///
+ytitle("Accesos por cada 100 hogares") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\TV_rest-pene.png", as(png) wid(1500) replace
+
+
+clear all
+use "ift\acc_tv_rest.dta"
+keep if year>=2013
+
+collapse (sum) accesos=a_total_e, by(date tecno_acceso_tv)
+drop if tecno_acceso_tv == "HFC"
+replace accesos = accesos/1000000
+encode tecno_acceso_tv, generate(jota)
+* 1 cable 2 DTH 3 IPTV Terrestre 4 microondas 5 sin información
+drop tecno
+reshape wide accesos, i(date) j(jota)
+drop accesos4 accesos5
+
+graph hbar accesos1 accesos2 accesos3, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019"))  ///
+title("Accesos de TV restringida por tipo de tecnología (mensual, 2013-2019)") ///
+ytitle("Millones de accesos") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.") legend( label(1 "Cable") label(2 "Satélite") label(3 "IPTV"))
+*Salvar
+graph export "results\TV_rest-tecno.png", as(png) wid(1500) replace
+
+
+clear all
+use "ift\sus_tv_rest.dta"
+keep if year>=2013
+keep if month == 12
+
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+sort grupo date
+format s_total_e %15.0fc
+collapse (sum) s_total_e, by(grupo date)
+rename s_total_e u
+reshape wide u, i(date) j(grupo) string
+
+drop uAIRECABLE uAXTEL uCABLECOM uCABLEVISION uMAXCOM uSTARGROUP uTV_REY uULTRAVISION
+
+gen ene = _n
+tsset ene
+gen cdish = (uDISH_MVS - l.uDISH_MVS)/1000
+gen cGTV = (uGRUPO_TELEVISA - l.uGRUPO_TELEVISA)/1000
+gen cmegacable = (uMEGACABLE_MCM - l.uMEGACABLE_MCM)/1000
+gen ctotal = (uTOTALPLAY - l.uTOTALPLAY)/1000
+
+format cdish cGTV cmegacable ctotal %15.0fc
+
+drop in 1
+drop uDISH_MVS uGRUPO_TELEVISA uMEGACABLE_MCM uTOTALPLAY ene
+
+graph bar cdish cGTV cmegacable ctotal, over(date, relabel(1 "2013-2014" 2 "2014-2015" 3 "2015-2016" 4 "2016-2017" 5 "2017-2018" 6 "2018-2019")) ///
+title("Cambio en número de suscriptores (a diciembre de cada año)") ///
+ytitle("Cambio en suscriptores (miles)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "Dish") label(2 "GTV") label(3 "Megacable") label(4 "TotalPlay") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\TV_rest-cambio.png", as(png) wid(1500) replace
+
+
+clear all
+use "ift\ihh_tv_rest.dta"
+keep if year>=2012
+
+graph bar ihh_tvres_e , over(date, relabel(1 "1T 2012" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 "4T 2019")) ///
+title("Índice de Herfindahl-Hirschman, TV restringida (trimestral)") ///
+ytitle("IHH") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\TV_rest-ihh.png", as(png) wid(1500) replace
 
 
 **************************************************************** ENDUTIH Hogares
