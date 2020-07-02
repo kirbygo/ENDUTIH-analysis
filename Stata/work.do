@@ -1124,6 +1124,25 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 *Salvar
 graph export "results\TV_rest-cambio.png", as(png) wid(1500) replace
 
+gen y = 2014
+replace y = 2015 in 2
+replace y = 2016 in 3
+replace y = 2017 in 4
+replace y = 2018 in 5
+replace y = 2019 in 6
+drop date
+reshape long c , i(y) j(usu) string
+reshape wide c , i(usu) j(y)
+
+graph bar c2014 c2015 c2016 c2017 c2018 c2019, over(usu, relabel(1 "GTV" 2 "Dish" 3 "Megacable" 4 "TotalPlay")) ///
+title("Cambio en número de suscriptores (a diciembre de cada año)") ///
+ytitle("Cambio en suscriptores (miles)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "13-14") label(2 "14-15") label(3 "15-16") label(4 "16-17") label(5 "17-18")label(6 "18-19") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\TV_rest-cambio-2.png", as(png) wid(1500) replace
+
 
 clear all
 use "ift\ihh_tv_rest.dta"
