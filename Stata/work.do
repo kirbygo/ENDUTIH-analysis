@@ -1087,7 +1087,7 @@ graph export "results\TV_rest-tecno.png", as(png) wid(1500) replace
 clear all
 use "ift\sus_tv_rest.dta"
 keep if year>=2013
-keep if month == 12
+keep if month == 12 | (year==2013 & month==1)
 
 replace grupo = subinstr(grupo,"É","E",5)
 replace grupo = subinstr(grupo,"&","n",5)
@@ -1124,22 +1124,23 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 *Salvar
 graph export "results\TV_rest-cambio.png", as(png) wid(1500) replace
 
-gen y = 2014
-replace y = 2015 in 2
-replace y = 2016 in 3
-replace y = 2017 in 4
-replace y = 2018 in 5
-replace y = 2019 in 6
+gen y = 2013
+replace y = 2014 in 2
+replace y = 2015 in 3
+replace y = 2016 in 4
+replace y = 2017 in 5
+replace y = 2018 in 6
+replace y = 2019 in 7
 drop date
 reshape long c , i(y) j(usu) string
 reshape wide c , i(usu) j(y)
 
-graph bar c2014 c2015 c2016 c2017 c2018 c2019, over(usu, relabel(1 "GTV" 2 "Dish" 3 "Megacable" 4 "TotalPlay")) ///
+graph bar c2013 c2014 c2015 c2016 c2017 c2018 c2019, over(usu, relabel(1 "GTV" 2 "Dish" 3 "Megacable" 4 "TotalPlay")) ///
 title("Cambio en número de suscriptores (a diciembre de cada año)") ///
 ytitle("Cambio en suscriptores (miles)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
-scheme(538) legend(label(1 "13-14") label(2 "14-15") label(3 "15-16") label(4 "16-17") label(5 "17-18")label(6 "18-19") region(color(white))) ///
+scheme(538) legend(label(1 "12-13") label(2 "13-14") label(3 "14-15") label(4 "15-16") label(5 "16-17") label(6 "17-18")label(7 "18-19") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT.")
+note("Nota: Elaboración propia con información del IFT, BIT." "Para 2013 es el comparativo entre enero 2013 y diciembre del mismo año.")
 *Salvar
 graph export "results\TV_rest-cambio-2.png", as(png) wid(1500) replace
 
