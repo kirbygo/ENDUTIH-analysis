@@ -379,6 +379,7 @@ gen nbinpctotal = (inpctotal/inpctotal[1])*100
 gen nbinpccom = (inpccom/inpccom[1])*100
 gen nbinpccomequipo = (inpccomequipo/inpccomequipo[1])*100
 gen nbinpccomserv = (inpccomserv/inpccomserv[1])*100
+gen nbinpctv = (inpctv/inpctv[1])*100
 
 *Reforma 11 jun 2013
 *Ley 14 jul 2014
@@ -409,6 +410,26 @@ note("Nota: Elaboración propia con información del INEGI, INPC.")
 graph export "results\inpc2.png", as(png) wid(1000) replace
 
 
+tw tsline inpctotal inpctv, ///
+title("Evolución INPC (General) e INPC TV Restringida (Base = 15-jul-2018)") ///
+ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "INPC") label(2 "INPC-TV restr.") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del INEGI, INPC.")
+*Salvar
+graph export "results\inpc3.png", as(png) wid(1000) replace
+
+
+tw tsline nbinpctotal nbinpctv, ///
+title("Evolución INPC (General) e INPC TV Restringida (Base = 15-ene-2011)") ///
+ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "INPC") label(2 "INPC-TV restr.") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del INEGI, INPC.")
+*Salvar
+graph export "results\inpc4.png", as(png) wid(1000) replace
 
 
 ************************************************************************ BIT IFT
