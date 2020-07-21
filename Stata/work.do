@@ -1721,3 +1721,97 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 graph export "results\both.png", as(png) wid(1500) replace
 graph close
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+******************************************************** INPC Structural break
+clear all
+use "db\inpc.dta"
+gen time = _n
+tsset time
+
+*Hay un error en 2Q nov 2012 a 1Q ene 2013
+tsline inpccomserv
+
+replace inpccomserv = . in 46/49
+
+mipolate inpccomserv time, generate(aver) spline
+
+tsline inpccomserv aver
+replace inpccomserv = aver
+drop aver
+*Estacionariedad
+dfuller inpccomserv, trend l(1)
+dfuller inpccomserv, trend l(30)
+pperron inpccomserv, trend l(1)
+pperron inpccomserv, trend l(30)
+
+gen difinpccomserv = D.inpccomserv
+
+dfuller difinpccomserv, trend l(1)
+dfuller difinpccomserv, trend l(30)
+pperron difinpccomserv, trend l(1)
+pperron difinpccomserv, trend l(30)
+*Esta serie es estacionaria
+
+corrgram inpccomserv
+corrgram difinpccomserv
+
+arima inpccomserv, arima(1, 1, 0)
+
+*Pruebas de correcta especificación
+*Estabilidad
+estat aroots
+*Estable porque mod eigenval <1
+*Residuales
+capture drop res
+predict res, r
+*Histograma residuales
+histogram res, bin(200)
+*Correlograma residuales
+corrgram res
+*Prueba ruido blanco
+wntestb res, msize(tiny)
+*Sí es ruido blanco porque P(Bartlet)>0.05
+
+gen la1difinpccomserv = l.difinpccomserv
+
+regress difinpccomserv la1difinpccomserv, robust
+estat sbsingle , slr gen(Lr_est) ltrim(5) rtrim(5)
+
+tw (line Lr_est date, lw(medthin)) ///
+(line inpccomserv date, lw(medthin) yax(2)), ///
+title("Cambio estructural desconocido del INPC de servicios de telecomunicaciones") xtitle("Fecha") ysize(12) ytitle("Estadístico LR", axis(1)) ytitle("INPC", axis(2)) ///
+ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#6 , angle(0)) xsize(20) ///
+scheme(538) legend(label(1 "Estimador LR") label(2 "INPC de serv. telecom."))
+graph export "Camb_desc.png", as(png) wid(2000) replace
+
+*Máximos locales en:
+* Entre noviembre 2012 y febrero 2013
+* 30 de enero de 2015
+* de diciembre de 2015 a septiembre de 2017
+
+
+
+
+
+
+
+
+
