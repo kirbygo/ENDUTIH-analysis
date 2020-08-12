@@ -1899,23 +1899,47 @@ tab P5_7_2
 *Variables necesarias
 gen triple = 0
 replace triple = 1 if P5_7_2==1
-
 gen tvtel = 0
 replace tvtel = 1 if P5_7_3==1
-
 gen tvint = 0
 replace tvint = 1 if P5_7_4==1
-
 gen telint = 0
 replace telint = 1 if P5_7_5==1
+gen tv = 0
+replace tv = 1 if P5_7_6==1
+gen tel = 0
+replace tel = 1 if P5_7_7==1
+gen inter = 0
+replace inter = 1 if P5_7_8==1
 
-gen triple = 0
-replace triple = 1 if P5_7_2==1
+gen sinttrip = 0
+replace sinttrip = 1 if tvtel==1 & inter==1
+replace sinttrip = 1 if tvint==1 & tel==1
+replace sinttrip = 1 if tv==1 & tel==1 & inter==1
 
+gen sintdob = 0
+replace sintdob = 1 if tv==1 & tel==1
+replace sintdob = 1 if tv==1 & inter==1
 
+gen sintdobtvt = 0
+replace sintdobtvt = 1 if tv==1 & tel==1
+gen sintdobtvi = 0
+replace sintdobtvi = 1 if tv==1 & inter==1
+gen sintdobti = 0
+replace sintdobti = 1 if tel==1 & inter==1
 
-
-
+gen catego=0
+replace catego=1 if triple==1
+replace catego=2 if tvtel==1
+replace catego=3 if tvint==1
+replace catego=4 if telint==1
+replace catego=5 if tv==1
+replace catego=6 if tel==1
+replace catego=7 if inter==1
+replace catego=8 if sintdobtvt==1
+replace catego=9 if sintdobtvi==1
+replace catego=10 if sintdobti==1
+replace catego=11 if sinttrip==1
 
 * P5_7_2 - 3 play
 * P5_7_3 - TV paga y Telefono fijo
@@ -1924,6 +1948,10 @@ replace triple = 1 if P5_7_2==1
 * P5_7_6 - Solo TV paga
 * P5_7_7 - Solo teléfono fijo
 * P5_7_8 - Solo internet
+*sint doble tv tel_fija
+*sint doble tv internet
+*sint doble tel internet
+*sint triple
 
 *Declaramos la survey
 svyset upm [pweight=FAC_HOG], strata(EST_DIS)
@@ -1931,27 +1959,35 @@ svyset upm [pweight=FAC_HOG], strata(EST_DIS)
 
 ************** Graphs
 *TV Restringida
-svy : total P5_7_2, over(year) cformat(%9.0fc) level(90)
+svy : total triple tvtel tvint tv, over(year) cformat(%9.0fc) level(90)
 marginsplot, title("Hogares con TV restringida.") ///
 ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
-graph export "results\tvrestnum.png", as(png) wid(1500) replace
-graph close
+*graph export "results\alexa1.png", as(png) wid(1500) replace
+*graph close
+
+*TV Restringida
+svy : total triple tvtel tvint tv sinttrip sintdob, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con TV restringida.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 *Porcentajes
-svy : proportion TV_rest , over(year) level(90) percent
+svy : proportion catego , over(year) level(90) percent
 marginsplot, x(year) title("Porcentaje de hogares con TV restringida.") ///
-subtitle("TV restringida (%).") gr(TV_rest) ///
+subtitle("TV restringida (%).") ///
 ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
 scheme(538) xtitle("Año") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
-graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
-graph close
+*graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
+*graph close
 
 
 
