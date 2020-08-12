@@ -1740,6 +1740,301 @@ graph close
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**************************************************************** ENDUTIH Hogares ADICIONAL PAQUETES
+*Año por año para juntarlos
+*Homogenizo todo a 2019:
+* P5_7_1 - 4 play
+* P5_7_2 - 3 play
+* P5_7_3 - TV paga y Telefono fijo
+* P5_7_4 - TV Paga e internet
+* P5_7_5 - Telefono e internet
+* P5_7_6 - Solo TV paga
+* P5_7_7 - Solo teléfono fijo
+* P5_7_8 - Solo internet
+* Equivalencias:
+/*
+paqu		2019		2018-2017	2016		2015
+4play		P5_7_1				
+3play		P5_7_2		P5_6_1		P5_2_1_1	P5_1_1
+tv+telef	P5_7_3		P5_6_2		P5_2_2_1	P5_1_2
+tv+int		P5_7_4		P5_6_3		P5_2_3_2	P5_1_3
+telef+int	P5_7_5		P5_6_4		P5_2_4_2	P5_1_6
+tv			P5_7_6		P5_6_5		P5_2A_1_1	P5_1_4
+telef		P5_7_7		P5_6_6		P5_2A_3_1	P5_1_7
+int			P5_7_8		P5_6_7		P5_2A_2_1	P5_1_5
+*/
+
+
+*2019
+clear all
+use "$dir\db\2019-hogares.dta"
+keep upm FAC_HOG EST_DIS P5_7_1 P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8
+destring upm FAC_HOG EST_DIS P5_7_1 P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8, replace
+gen year=2019
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2019-hog-2.dta", replace
+
+*2018
+clear all
+use "$dir\db\2018-hogares.dta"
+drop P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7
+rename P5_6_1 P5_7_2
+rename P5_6_2 P5_7_3
+rename P5_6_3 P5_7_4
+rename P5_6_4 P5_7_5
+rename P5_6_5 P5_7_6
+rename P5_6_6 P5_7_7
+rename P5_6_7 P5_7_8
+keep upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8
+destring upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8, replace
+gen year=2018
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2018-hog-2.dta", replace
+
+*2017
+clear all
+use "$dir\db\2017-hogares.dta"
+drop P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7
+rename P5_6_1 P5_7_2
+rename P5_6_2 P5_7_3
+rename P5_6_3 P5_7_4
+rename P5_6_4 P5_7_5
+rename P5_6_5 P5_7_6
+rename P5_6_6 P5_7_7
+rename P5_6_7 P5_7_8
+keep upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8
+destring upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8, replace
+gen year=2017
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2017-hog-2.dta", replace
+
+*2016
+clear all
+use "$dir\db\2016-hogares.dta"
+rename P5_2_1_1 P5_7_2
+rename P5_2_2_1 P5_7_3
+rename P5_2_3_2 P5_7_4
+rename P5_2_4_2 P5_7_5
+rename P5_2A_1_1 P5_7_6
+rename P5_2A_3_1 P5_7_7
+rename P5_2A_2_1 P5_7_8
+rename UPM_DIS upm
+rename factor FAC_HOG
+keep upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8
+destring upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8, replace
+gen year=2016
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2016-hog-2.dta", replace
+
+
+*2015
+clear all
+use "$dir\db\2015-hogares.dta"
+rename P5_1_1 P5_7_2
+rename P5_1_2 P5_7_3
+rename P5_1_3 P5_7_4
+rename P5_1_6 P5_7_5
+rename P5_1_4 P5_7_6
+rename P5_1_7 P5_7_7
+rename P5_1_5 P5_7_8
+rename factor FAC_HOG
+keep upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8
+destring upm FAC_HOG EST_DIS P5_7_2 P5_7_3 P5_7_4 P5_7_5 P5_7_6 P5_7_7 P5_7_8, replace
+gen year=2015
+replace EST_DIS = EST_DIS + year*10000
+save "$dir\tmp\2015-hog-2.dta", replace
+
+
+************** Unión
+clear all
+use "$dir\tmp\2019-hog-2.dta"
+append using "$dir\tmp\2018-hog-2.dta"
+append using "$dir\tmp\2017-hog-2.dta"
+append using "$dir\tmp\2016-hog-2.dta"
+append using "$dir\tmp\2015-hog-2.dta"
+
+*NO existe el cuadruplleplay en México. Al menos no en estos encuestados
+tab P5_7_1
+drop P5_7_1
+tab P5_7_2
+
+*Variables necesarias
+gen triple = 0
+replace triple = 1 if P5_7_2==1
+
+gen tvtel = 0
+replace tvtel = 1 if P5_7_3==1
+
+gen tvint = 0
+replace tvint = 1 if P5_7_4==1
+
+gen telint = 0
+replace telint = 1 if P5_7_5==1
+
+gen triple = 0
+replace triple = 1 if P5_7_2==1
+
+
+
+
+
+
+* P5_7_2 - 3 play
+* P5_7_3 - TV paga y Telefono fijo
+* P5_7_4 - TV Paga e internet
+* P5_7_5 - Telefono e internet
+* P5_7_6 - Solo TV paga
+* P5_7_7 - Solo teléfono fijo
+* P5_7_8 - Solo internet
+
+*Declaramos la survey
+svyset upm [pweight=FAC_HOG], strata(EST_DIS)
+
+
+************** Graphs
+*TV Restringida
+svy : total P5_7_2, over(year) cformat(%9.0fc) level(90)
+marginsplot, title("Hogares con TV restringida.") ///
+ytitle("Número de hogares") ysize(5) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\tvrestnum.png", as(png) wid(1500) replace
+graph close
+
+*Porcentajes
+svy : proportion TV_rest , over(year) level(90) percent
+marginsplot, x(year) title("Porcentaje de hogares con TV restringida.") ///
+subtitle("TV restringida (%).") gr(TV_rest) ///
+ytitle("Porcentaje de hogares (%)") ysize(5) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
+graph close
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ******************************************************** INPC Structural break
 clear all
 use "db\inpc.dta"
