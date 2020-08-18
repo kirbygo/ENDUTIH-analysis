@@ -1953,6 +1953,15 @@ replace catego=11 if sinttrip==1
 *sint doble tel internet
 *sint triple
 
+gen catego2=0
+replace catego2=1 if tv==1
+replace catego2=2 if tvint==1 | tvtel==1
+replace catego2=3 if triple==1
+
+gen dobletv=0
+replace dobletv=1 if tvint==1 | tvtel==1
+
+
 *Declaramos la survey
 svyset upm [pweight=FAC_HOG], strata(EST_DIS)
 
@@ -1989,8 +1998,33 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 *graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
 *graph close
 
+la var triple "Triple Play"
+la var dobletv "Doble Play (TV)"
+la var tv "TV sin paquete"
 
+*TV Restringida
+svy : total triple dobletv tv , over(year) cformat(%9.0fc) level(90)
+marginsplot, plot(, lab("Triple play" "Doble play TV" "TV sin paquete")) title("Hogares con TV restringida, según el tipo de contratación.") ///
+ytitle("Número de hogares") ysize(4) ylabel(#15 , format(%15.0fc) angle(0)) ///
+scheme(538) xtitle("Año") legend(label(1 "perro")) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
+*graph export "ale.png", as(png) wid(1500) replace
+
+*Porcentajes
+svy : proportion catego2 , over(year) level(90) percent
+marginsplot, x(year) plot(, lab("Sin STAR" "TV sin paquete" "Doble play TV" "Triple play")) title("Porcentaje de hogares: TV restringida, según paquete contratado.") ///
+subtitle("TV restringida (%).") ///
+ytitle("Porcentaje de hogares (%)") ysize(3) ylabel(#15 , format(%5.2fc) angle(0)) ///
+scheme(538) xtitle("Año") ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
+
+*graph export "ale2.png", as(png) wid(1500) replace
+
+*graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
+*graph close
 
 
 
