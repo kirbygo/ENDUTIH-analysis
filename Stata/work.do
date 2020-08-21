@@ -1180,6 +1180,41 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 graph export "results\TV_rest-ihh.png", as(png) wid(1500) replace
 
 
+
+
+
+clear all
+use "ift\lin_int_mov.dta"
+keep if year>=2014
+gen pos = l_pospagoc_e + l_pospagol_e
+collapse (sum) int_mov=l_total_e prepago=l_prepago_e ///
+pospago=pos, by(date)
+format pospago %12.0g
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 **************************************************************** ENDUTIH Hogares
 *Año por año para juntarlos
 *Homogenizo todo a 2018 (parece ser igual a 2017):
