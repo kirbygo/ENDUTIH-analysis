@@ -67,6 +67,8 @@ copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_SUS_BAF_ITE_VA.csv" "sus_in
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_IHH_TVRES_ITE_VA.csv" "ihh_tv_rest.csv"
 *Penetración TV Rest
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_PENETRACION_H_TVRES_ITE_VA.csv" "pene_tv_rest.csv"
+*Datos BAM
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_TRAF_INTMOVIL_ITE_VA.csv" "datos_int_mov.csv"
 *OJO. Parece ser que ya no funciona programático ahora :(
 *Habrá de hacerse manualmente :(
 *Te odio IFT !!!
@@ -363,6 +365,28 @@ duplicates r date
 *Info por fecha.
 
 save "ift\pene_tv_rest.dta", replace
+
+***********************************12
+clear all
+import delimited "suscrip\datos_int_mov.csv", parselocale(es_MX)
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
+
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
+
+sort date
+*Ojo, de 1996 a 2012 es trimestral, de 2013 a 2019 es MENSUAL
+duplicates r date
+*Info por fecha.
+
+save "ift\datos_int_mov.dta", replace
 
 
 ********************************************************************************
@@ -1165,7 +1189,6 @@ note("Nota: Elaboración propia con información del IFT, BIT." "Para 2013 es el
 *Salvar
 graph export "results\TV_rest-cambio-2.png", as(png) wid(1500) replace
 
-
 clear all
 use "ift\ihh_tv_rest.dta"
 keep if year>=2012
@@ -1180,16 +1203,185 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 graph export "results\TV_rest-ihh.png", as(png) wid(1500) replace
 
 
-
-
-
+*AQUI ******************************************************************************************************
 clear all
 use "ift\lin_int_mov.dta"
 keep if year>=2014
 gen pos = l_pospagoc_e + l_pospagol_e
-collapse (sum) int_mov=l_total_e prepago=l_prepago_e ///
-pospago=pos, by(date)
-format pospago %12.0g
+format pos %12.0g
+rename l_prepago_e pre
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+sort grupo date
+
+collapse (sum) pre pos, by(grupo date)
+
+gen tot = pre + pos
+
+reshape wide pre pos tot, i(date) j(grupo) string
+
+sort date
+tsset date, m
+
+egen total = rowtotal(totAIRBUS totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totHER_MOBILE totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totMIIO totNEUS_MOBILE totNEXTEL totOUI totQBO_CEL totSIMPATI totSIMPLII totSIX_MOVIL totTELEFONICA totTOKA_MOVIL totVIRGIN_MOBILE totWEEX)
+
+foreach perrito in totAIRBUS totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totHER_MOBILE totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totMIIO totNEUS_MOBILE totNEXTEL totOUI totQBO_CEL totSIMPATI totSIMPLII totSIX_MOVIL totTELEFONICA totTOKA_MOVIL totVIRGIN_MOBILE totWEEX {
+	gen p`perrito' = (`perrito'/total)*100
+	gen m`perrito' = `perrito'/1000000
+}
+
+graph hbar ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, over(date, relabel(1 "Ene 2014" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 "Dic 2019")) stack ///
+title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
+ytitle("Participación en líneas (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+*Salvar
+graph export "results\part_BAM.png", as(png) wid(1500) replace
+
+tw tsline ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, ///
+title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
+ytitle("Participación en líneas (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\part_BAM2.png", as(png) wid(1000) replace
+
+tw tsline mtotAMERICA_MOVIL mtotATnT mtotIUSACELL_UNEFON mtotNEXTEL mtotTELEFONICA, ///
+title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
+ytitle("Líneas con BAM (millones)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\part_BAM3.png", as(png) wid(1000) replace
+
+
+* Tráfico por velocidad
+clear all
+use "ift\datos_int_mov.dta"
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+sort grupo date
+
+*traf_tb_2g_e traf_tb_3g_e traf_tb_4g_e traf_tb_e
+rename traf_tb_2g_e dosg
+rename traf_tb_3g_e tresg
+rename traf_tb_4g_e cuatrog
+rename traf_tb_e tot
+* dosg tresg cuatrog tot
+
+collapse (sum) dosg tresg cuatrog tot, by(date)
+
+gen p2g = (dosg/tot)*100
+gen p3g = (tresg/tot)*100
+gen p4g = (cuatrog/tot)*100
+format p3g p4g p2g %4.2f
+
+graph hbar p2g p3g p4g, over(date, relabel(1 "Ene 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dic 2019")) stack ///
+title("Tráfico de BAM por velocidad (mensual, 2015-2019)") ///
+ytitle("Porcentaje (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "2G") label(2 "3G") label(3 "4G") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\BAM-vel.png", as(png) wid(1500) replace
+
+graph hbar dosg tresg cuatrog, over(date, relabel(1 "Ene 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dic 2019")) stack ///
+title("Tráfico de BAM por velocidad (mensual, 2015-2019)") ///
+ytitle("Terabytes") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "2G") label(2 "3G") label(3 "4G") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\BAM-vel2.png", as(png) wid(1500) replace
+
+graph hbar dosg , over(date, relabel(1 "Ene 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dic 2019")) stack ///
+title("Tráfico de 2G BAM (mensual, 2015-2019)") ///
+ytitle("Terabytes") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "2G") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+
+
+* Tráfico por GIE
+clear all
+use "ift\datos_int_mov.dta"
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+tab grupo
+sort grupo date
+
+rename traf_tb_e tot
+
+collapse (sum) tot, by(grupo date)
+
+reshape wide tot, i(date) j(grupo) string
+
+sort date
+tsset date, m
+*******************************AQUI VOY WEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEee
+egen total = rowtotal(totAIRBUS totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totHER_MOBILE totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totMIIO totNEUS_MOBILE totNEXTEL totOUI totQBO_CEL totSIMPATI totSIMPLII totSIX_MOVIL totTELEFONICA totTOKA_MOVIL totVIRGIN_MOBILE totWEEX)
+
+foreach perrito in totAIRBUS totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totHER_MOBILE totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totMIIO totNEUS_MOBILE totNEXTEL totOUI totQBO_CEL totSIMPATI totSIMPLII totSIX_MOVIL totTELEFONICA totTOKA_MOVIL totVIRGIN_MOBILE totWEEX {
+	gen p`perrito' = (`perrito'/total)*100
+	gen m`perrito' = `perrito'/1000000
+}
+
+graph hbar ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, over(date, relabel(1 "Ene 2014" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 "Dic 2019")) stack ///
+title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
+ytitle("Participación en líneas (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+*Salvar
+graph export "results\part_BAM.png", as(png) wid(1500) replace
+
+tw tsline ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, ///
+title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
+ytitle("Participación en líneas (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\part_BAM2.png", as(png) wid(1000) replace
+
+tw tsline mtotAMERICA_MOVIL mtotATnT mtotIUSACELL_UNEFON mtotNEXTEL mtotTELEFONICA, ///
+title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
+ytitle("Líneas con BAM (millones)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+*Salvar
+graph export "results\part_BAM3.png", as(png) wid(1000) replace
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
