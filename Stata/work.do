@@ -32,8 +32,7 @@ cd $dir
 
 *************************************************************************** INPC
 *Bajar INPC del INEGI
-cap mkdir inpc
-cd inpc
+cd data
 *Entramos aquí:
 *https://www.inegi.org.mx/app/indicesdeprecios/Estructura.aspx?idEstructura=112001200090&T=%C3%8Dndices%20de%20Precios%20al%20Consumidor&ST=Clasificaci%C3%B3n%20del%20consumo%20individual%20por%20finalidades(CCIF)%20(quincenal)
 *Y descargamos lo que queremos, en excel para quitarle a mano el metadato
@@ -101,8 +100,7 @@ destring D_R EST_DIS P* UPM_DIS VIV_SEL aream ent hogar nreninfo upm, replace
 *************************************************************************** INPC
 clear all
 cd $dir
-cap mkdir inpc
-import excel "inpc\inpc.xls", sheet("stata") firstrow
+import excel "data\inpc.xls", sheet("stata") firstrow
 
 gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
 format datereal %td
@@ -399,20 +397,23 @@ cap mkdir "results"
 clear all
 use "db\inpc.dta"
 tsset date
-gen nbinpctotal = (inpctotal/inpctotal[1])*100
-gen nbinpccom = (inpccom/inpccom[1])*100
-gen nbinpccomequipo = (inpccomequipo/inpccomequipo[1])*100
-gen nbinpccomserv = (inpccomserv/inpccomserv[1])*100
-gen nbinpctv = (inpctv/inpctv[1])*100
+*paquete internet movil fijo paga total
+*gen nbpaquete = (paquete/paquete[1])*100
+gen nbinternet= (internet/internet[1])*100
+gen nbmovil= (movil/movil[1])*100
+*gen nbfijo= (fijo/fijo[1])*100
+gen nbpaga= (paga/paga[1])*100
+gen nbtotal= (total/total[1])*100
+gen nbcomunic= (comunic/comunic[1])*100
 
 *Reforma 11 jun 2013
 *Ley 14 jul 2014
 * Pruebillas
-*twoway tsline inpctotal inpccom inpccomequipo inpccomserv, tline(15jun2013) tline(15jul2014)
-*twoway tsline nbinpctotal nbinpccom nbinpccomequipo nbinpccomserv, tline(15jun2013) tline(15jul2014)
+twoway tsline paquete internet movil fijo paga total, tline(15jun2013) tline(15jul2014)
+twoway tsline nbinternet nbmovil nbpaga nbtotal, tline(15jun2013) tline(15jul2014)
 
-
-tw tsline inpctotal inpccom, ///
+* INPC Comunicaciones vs general
+tw tsline total comunic, ///
 title("Evolución INPC (General) y el subíndice INPC-Comunicaciones (Base = 15-jul-2018)") ///
 ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
@@ -422,8 +423,7 @@ note("Nota: Elaboración propia con información del INEGI, INPC.")
 *Salvar
 graph export "results\inpc1.png", as(png) wid(1000) replace
 
-
-tw tsline nbinpctotal nbinpccom, ///
+tw tsline nbtotal nbcomunic, ///
 title("Evolución INPC (General) y el subíndice INPC-Comunicaciones (Base = 15-ene-2011)") ///
 ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
@@ -433,8 +433,8 @@ note("Nota: Elaboración propia con información del INEGI, INPC.")
 *Salvar
 graph export "results\inpc2.png", as(png) wid(1000) replace
 
-
-tw tsline inpctotal inpctv, ///
+* INPC TV Paga vs general
+tw tsline total paga, ///
 title("Evolución INPC (General) e INPC TV Restringida (Base = 15-jul-2018)") ///
 ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
@@ -444,8 +444,7 @@ note("Nota: Elaboración propia con información del INEGI, INPC.")
 *Salvar
 graph export "results\inpc3.png", as(png) wid(1000) replace
 
-
-tw tsline nbinpctotal nbinpctv, ///
+tw tsline nbtotal nbpaga, ///
 title("Evolución INPC (General) e INPC TV Restringida (Base = 15-ene-2011)") ///
 ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
@@ -454,6 +453,39 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Nota: Elaboración propia con información del INEGI, INPC.")
 *Salvar
 graph export "results\inpc4.png", as(png) wid(1000) replace
+
+* INPC internet vs general
+tw tsline total internet, ///
+title("Evolución INPC (General) e INPC Internet (Base = 15-jul-2018)") ///
+ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "INPC") label(2 "INPC-Internet") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del INEGI, INPC.")
+*Salvar
+graph export "results\inpc5.png", as(png) wid(1000) replace
+
+tw tsline nbtotal nbinternet, ///
+title("Evolución INPC (General) e INPC Internet (Base = 15-ene-2011)") ///
+ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "INPC") label(2 "INPC-Internet") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del INEGI, INPC.")
+*Salvar
+graph export "results\inpc6.png", as(png) wid(1000) replace
+
+* INPC paquete vs general
+tw tsline total paquete if date>=td(30jul2018), ///
+title("Evolución INPC (General) e INPC Triple Play (Base = 30-jul-2018)") ///
+ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "INPC") label(2 "INPC-Internet") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del INEGI, INPC.")
+*Salvar
+graph export "results\inpc7.png", as(png) wid(1000) replace
+
 
 
 ************************************************************************ BIT IFT
@@ -1203,7 +1235,7 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 graph export "results\TV_rest-ihh.png", as(png) wid(1500) replace
 
 
-*AQUI ******************************************************************************************************
+*Gráficas adicionales BAM
 clear all
 use "ift\lin_int_mov.dta"
 keep if year>=2014
@@ -1334,42 +1366,42 @@ reshape wide tot, i(date) j(grupo) string
 
 sort date
 tsset date, m
-*******************************AQUI VOY WEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEee
-egen total = rowtotal(totAIRBUS totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totHER_MOBILE totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totMIIO totNEUS_MOBILE totNEXTEL totOUI totQBO_CEL totSIMPATI totSIMPLII totSIX_MOVIL totTELEFONICA totTOKA_MOVIL totVIRGIN_MOBILE totWEEX)
 
-foreach perrito in totAIRBUS totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totHER_MOBILE totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totMIIO totNEUS_MOBILE totNEXTEL totOUI totQBO_CEL totSIMPATI totSIMPLII totSIX_MOVIL totTELEFONICA totTOKA_MOVIL totVIRGIN_MOBILE totWEEX {
+egen total = rowtotal(totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totNEXTEL totOUI totQBO_CEL totSIMPATI totTELEFONICA totVIRGIN_MOBILE totWEEX)
+
+foreach perrito in totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX totCIERTO totFLASH_MOBILE totFREEDOM totIUSACELL_UNEFON totMAXCOM totMAZ_TIEMPO totMEGACABLE_MCM totMEGATEL totNEXTEL totOUI totQBO_CEL totSIMPATI totTELEFONICA totVIRGIN_MOBILE totWEEX {
 	gen p`perrito' = (`perrito'/total)*100
-	gen m`perrito' = `perrito'/1000000
+	gen m`perrito' = `perrito'/1000
 }
 
-graph hbar ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, over(date, relabel(1 "Ene 2014" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 "Dic 2019")) stack ///
-title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
-ytitle("Participación en líneas (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+graph hbar ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, over(date, relabel(1 "Ene 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dic 2019")) stack ///
+title("Participación de los principales grupos en tráfico con BAM (mensual, 2015-2019)") ///
+ytitle("Participación por tráfico (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
 *Salvar
-graph export "results\part_BAM.png", as(png) wid(1500) replace
+graph export "results\part_BAM_trafic.png", as(png) wid(1500) replace
 
 tw tsline ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, ///
-title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
+title("Participación de los principales grupos en lineas con BAM (mensual, 2015-2019)") ///
 ytitle("Participación en líneas (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
 scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información del IFT, BIT.")
 *Salvar
-graph export "results\part_BAM2.png", as(png) wid(1000) replace
+graph export "results\part_BAM2_trafic.png", as(png) wid(1000) replace
 
 tw tsline mtotAMERICA_MOVIL mtotATnT mtotIUSACELL_UNEFON mtotNEXTEL mtotTELEFONICA, ///
-title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
-ytitle("Líneas con BAM (millones)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+title("Participación de los principales grupos en tráfico con BAM (mensual, 2015-2019)") ///
+ytitle("Petabytes (PB, 1000 TB)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
 scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información del IFT, BIT.")
 *Salvar
-graph export "results\part_BAM3.png", as(png) wid(1000) replace
+graph export "results\part_BAM3_trafic.png", as(png) wid(1000) replace
 
 
 
@@ -2339,33 +2371,33 @@ gen time = _n
 tsset time
 
 *Hay un error en 2Q nov 2012 a 1Q ene 2013
-tsline inpccomserv
+tsline movil
 
-replace inpccomserv = . in 46/49
+replace movil = . in 46/49
 
-mipolate inpccomserv time, generate(aver) spline
+mipolate movil time, generate(aver) spline
 
-tsline inpccomserv aver
-replace inpccomserv = aver
+tsline movil aver
+replace movil = aver
 drop aver
 *Estacionariedad
-dfuller inpccomserv, trend l(1)
-dfuller inpccomserv, trend l(30)
-pperron inpccomserv, trend l(1)
-pperron inpccomserv, trend l(30)
+dfuller movil, trend l(1)
+dfuller movil, trend l(30)
+pperron movil, trend l(1)
+pperron movil, trend l(30)
 
-gen difinpccomserv = D.inpccomserv
+gen difmovil = D.movil
 
-dfuller difinpccomserv, trend l(1)
-dfuller difinpccomserv, trend l(30)
-pperron difinpccomserv, trend l(1)
-pperron difinpccomserv, trend l(30)
+dfuller difmovil, trend l(1)
+dfuller difmovil, trend l(30)
+pperron difmovil, trend l(1)
+pperron difmovil, trend l(30)
 *Esta serie es estacionaria
 
-corrgram inpccomserv
-corrgram difinpccomserv
+corrgram movil
+corrgram difmovil
 
-arima inpccomserv, arima(1, 1, 0)
+arima movil, arima(4, 1, 0)
 
 *Pruebas de correcta especificación
 *Estabilidad
@@ -2382,22 +2414,92 @@ corrgram res
 wntestb res, msize(tiny)
 *Sí es ruido blanco porque P(Bartlet)>0.05
 
-gen la1difinpccomserv = l.difinpccomserv
+gen la1difmovil = l.difmovil
+gen la2difmovil = l.la1difmovil
+gen la3difmovil = l.la2difmovil
+gen la4difmovil = l.la3difmovil
 
-regress difinpccomserv la1difinpccomserv, robust
+regress difmovil la1difmovil la2difmovil la3difmovil la4difmovil, robust
 estat sbsingle , slr gen(Lr_est) ltrim(5) rtrim(5)
 
 tw (line Lr_est date, lw(medthin)) ///
-(line inpccomserv date, lw(medthin) yax(2)), ///
+(line movil date, lw(medthin) yax(2)), ///
 title("Cambio estructural desconocido del INPC de servicios de telecomunicaciones") xtitle("Fecha") ysize(12) ytitle("Estadístico LR", axis(1)) ytitle("INPC", axis(2)) ///
-ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#6 , angle(0)) xsize(20) ///
+ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#6 , angle(25)) xsize(20) ///
 scheme(538) legend(label(1 "Estimador LR") label(2 "INPC de serv. telecom."))
-graph export "Camb_desc.png", as(png) wid(2000) replace
+
+graph export "Camb_desc_telecom.png", as(png) wid(2000) replace
 
 *Máximos locales en:
 * Entre noviembre 2012 y febrero 2013
 * 30 de enero de 2015
 * de diciembre de 2015 a septiembre de 2017
+
+*Reforma 11 jun 2013
+*Ley 14 jul 2014
+* Pruebillas
+* tline(15jun2013) tline(15jul2014)
+* xline(19524) xline(19919)
+
+
+
+
+tsline internet
+*Estacionariedad
+dfuller internet, trend l(1)
+dfuller internet, trend l(30)
+pperron internet, trend l(1)
+pperron internet, trend l(30)
+
+gen difinternet = D.internet
+
+dfuller difinternet, trend l(1)
+dfuller difinternet, trend l(30)
+pperron difinternet, trend l(1)
+pperron difinternet, trend l(30)
+*Esta serie es estacionaria
+
+corrgram internet
+corrgram difinternet
+
+arima internet, arima(2, 1, 0)
+
+*Pruebas de correcta especificación
+*Estabilidad
+estat aroots
+* NO ES ESTABLE INTERNET EN NIVELES. PRIMERAS DIF!
+*Estable porque mod eigenval <1
+*Residuales
+capture drop res
+predict res, r
+*Histograma residuales
+histogram res, bin(200)
+*Correlograma residuales
+corrgram res
+*Prueba ruido blanco
+wntestb res, msize(tiny)
+*Sí es ruido blanco porque P(Bartlet)>0.05
+
+gen la1difinternet = l.difinternet
+gen la2difinternet = l.la1difinternet
+
+
+regress difinternet la1difinternet la2difinternet, robust
+estat sbsingle , slr gen(Lr_est1) ltrim(5) rtrim(5)
+
+tw (line Lr_est1 date, lw(medthin)) ///
+(line internet date, lw(medthin) yax(2)), ///
+title("Cambio estructural desconocido del INPC de servicios de internet") xtitle("Fecha") ysize(12) ytitle("Estadístico LR", axis(1)) ytitle("INPC", axis(2)) ///
+ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#6 , angle(25)) xsize(20) ///
+scheme(538) legend(label(1 "Estimador LR") label(2 "INPC de serv. inter."))
+
+graph export "Camb_desc_int.png", as(png) wid(2000) replace
+
+*Máximos en:
+* desde la primera quincena de sept hasta finales de febrero
+* xline(19524) xline(19919)
+
+
 
 
 
