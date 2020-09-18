@@ -68,6 +68,10 @@ copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_IHH_TVRES_ITE_VA.csv" "ihh_
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_PENETRACION_H_TVRES_ITE_VA.csv" "pene_tv_rest.csv"
 *Datos BAM
 copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_TRAF_INTMOVIL_ITE_VA.csv" "datos_int_mov.csv"
+*Tráfico telefonía movil
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_TRAF_TELMOVIL_ITE_VA.csv" "traf_mov.csv"
+*Ingresos Telecom
+copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_INGRESOS_TELECOM_ITE_VA.csv" "ingresos.csv"
 *OJO. Parece ser que ya no funciona programático ahora :(
 *Habrá de hacerse manualmente :(
 *Te odio IFT !!!
@@ -385,6 +389,52 @@ duplicates r date
 *Info por fecha.
 
 save "ift\datos_int_mov.dta", replace
+
+***********************************13
+clear all
+import delimited "suscrip\traf_mov.csv", parselocale(es_MX)
+rename anio year
+rename mes month
+gen day = substr(fecha,1,2)
+destring day, replace
+
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = mofd(datereal)
+format date %tm
+gen count = date
+
+sort date
+*Ojo de 2013 a 2019 es MENSUAL por concesionario
+duplicates r date
+*Info por fecha.
+
+save "ift\traf_mov.dta", replace
+
+***********************************14
+clear all
+import delimited "suscrip\ingresos.csv", parselocale(es_MX)
+rename anio year
+rename trim quart
+gen month = quart*3
+gen day = substr(fecha,1,2)
+destring day, replace
+
+gen datereal = date(string(day)+"/"+string(month)+"/"+string(year),"DMY")
+format datereal %td
+*Se usa mes como tsset
+gen date = qofd(datereal)
+format date %tq
+
+sort date concesionario
+*CUIDADO PORQUE SUELEN SER TRIMESTRALES PEEEERO HAY DATOS ANUALES
+replace ingresos_total_e = subinstr(ingresos_total_e,"$","",5)
+replace ingresos_total_e = subinstr(ingresos_total_e,",","",5)
+destring ingresos_total_e, replace
+format ingresos_total_e %15.0fc
+
+save "ift\ingresos.dta", replace
 
 
 ********************************************************************************
@@ -1404,32 +1454,155 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 graph export "results\part_BAM3_trafic.png", as(png) wid(1000) replace
 
 
+clear all
+use "ift\ingresos.dta"
+
+*Solo nos interesan ingresos por telefonía movil
+drop if i_fijo_movil == "Fijo"
+drop if i_fijo_movil == "Paging"
+drop if i_fijo_movil == "Red Compartida"
+drop if i_fijo_movil == "Satelital"
+drop if i_fijo_movil == "Trunking"
+*Supondré que la parte "fija" de "fijo y movil" o "fijo y OMV" es muy pequeña
+* Para Telefónic y AT&T en particular, es importante mencionar
+replace i_fijo_movil = "Móvil" if i_fijo_movil == "Fijo y Móvil"
+replace i_fijo_movil = "OMV" if i_fijo_movil == "Fijo y OMV"
+
+tab grupo i_fijo_m
+tab i_fijo_m
+
+tab i_anual_trim year
+
+sort concesionario date
+*Iusacell y Unefon en 2014, así como RadioMovil Dipsa 2013 y 2014 son ajustados
+* Quarteralizados desde el dato anual
+*Como es poco, lo haré a mano
+*La mera neta, mano:
+*Iusa 2014
+dis %10.0f 13002676449/4
+forvalues i = 88(1)91{
+	replace ingresos_total_e = 3250669112 in `i'
+}
+*Unefon2014
+dis %10.0f 5933303001/4
+forvalues i = 213(1)216{
+	replace ingresos_total_e = 1483325750 in `i'
+}
+*telcel2013
+dis %14.0f 159065000000/4
+forvalues i = 253(1)256{
+	replace ingresos_total_e = 39766250000 in `i'
+}
+*telcel2014
+dis %14.0f 173210000000/4
+forvalues i = 257(1)260{
+	replace ingresos_total_e = 43302500000 in `i'
+}
+
+collapse (sum) ingresos=ingresos_total_e (first) tipo=i_fijo_movil,by(grupo date)
+sort grupo date
+
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+
+save "tmp\ing_trim.dta", replace
 
 
+clear all
+use "ift\traf_mov.dta"
+replace date = qofd(datereal)
+format date %tq
+collapse (sum) traf_salida=traf_salida_e,by(grupo date)
+
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+format traf_salida %15.0fc
+save "tmp\traf_mov_trim.dta", replace
 
 
+clear all
+use "tmp\traf_mov_trim.dta"
+merge 1:1 grupo date using "tmp\ing_trim.dta"
+*Hay OMVs raros que tienen tráfico pero no ingresos
+*Otros que tienen ingresos pero no traf
+*Los borro
+keep if _merge==3
+drop _merge
+
+gen ingpormin=ingresos/traf_salida
+replace ingpormin=. if ingpormin==0
+
+drop tipo
+reshape wide traf_salida ingresos ingpormin, i(date) j(grupo) string
+
+tsset date, q
+
+tw tsline ingporminAMERICA_MOVIL ingporminATnT ingporminIUSACELL_UNEFON ingporminTELEFONICA, ///
+title("Ingreso por minuto de los principales grupos de telefonía movil (trimestral, 2013-2019)") ///
+ytitle("Ingreso por minuto de tráfico movil de salida") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "AMX") label(2 "AT&T") label(3 "Iusa-Une") label(4 "Telefónica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+
+tw tsline ingporminAMERICA_MOVIL ingporminATnT ingporminFLASH_MOBILE ingporminFREEDOM ingporminIUSACELL_UNEFON ingporminSIMPATI ingporminTELEFONICA ingporminVIRGIN_MOBILE ingporminWEEX, ///
+title("Ingreso por minuto de los principales grupos de telefonía movil (trimestral, 2013-2019)") ///
+ytitle("Ingreso por minuto de tráfico movil de salida") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "AMX") label(2 "AT&T") label(3 "Flash Mobile") label(4 "Freedom") label(5 "Iusa-Une") label(6 "Simpati") label(7 "Telefónica") label(8 "Virgin") label(9 "WEEX") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
 
 
+clear all
+use "tmp\traf_mov_trim.dta"
+merge 1:1 grupo date using "tmp\ing_trim.dta"
+*Hay OMVs raros que tienen tráfico pero no ingresos
+*Otros que tienen ingresos pero no traf
+*Los borro
+keep if _merge==3
+drop _merge
+
+replace tipo="Preponderante" if grupo=="AMERICA_MOVIL"
+
+collapse (sum) traf_salida ingresos,by(tipo date)
+
+gen ingpormin=ingresos/traf_salida
+replace ingpormin=. if ingpormin==0
+
+drop traf_salida ingresos
+reshape wide ingpormin, i(date) j(tipo) string
+
+tsset date, q
 
 
+tw tsline ingporminMóvil ingporminPreponderante, ///
+title("Media de ingreso por minuto en telefonía movil (trimestral, 2013-2019), por tipo") ///
+ytitle("Ingreso por minuto de tráfico movil de salida") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Grupos movil") label(2 "Preponderante") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
 
+tw tsline ingporminMóvil ingporminPreponderante ingporminOMV, ///
+title("Media de ingreso por minuto en telefonía movil (trimestral, 2013-2019), por tipo") ///
+ytitle("Ingreso por minuto de tráfico movil de salida") ysize(12) ylabel(0 40 " ", format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Grupos movil") label(2 "Preponderante") label(2 "Grupos OMV") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+* 2014 inicia tarifa 0 radiomovil dipsa
+* 1 enero 2015 eliminación larga distancia nacional
+* marzo 2016 lineamientos de OMV
+* agosto 2017 gana para no tener tarifa 0
+* 2016 ya también cambia la telefonía en que empiezan a dar "paquetes de servicios" con telefonía y sms ilimitado
 
 
 
