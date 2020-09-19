@@ -1576,11 +1576,25 @@ collapse (sum) traf_salida ingresos,by(tipo date)
 gen ingpormin=ingresos/traf_salida
 replace ingpormin=. if ingpormin==0
 
-drop traf_salida ingresos
-reshape wide ingpormin, i(date) j(tipo) string
+reshape wide traf_salida ingresos ingpormin, i(date) j(tipo) string
+replace traf_salidaPreponderante = traf_salidaPreponderante/1000000000
+replace ingresosPreponderante = ingresosPreponderante/1000000000
+
+replace traf_salidaMóvil = traf_salidaMóvil/1000000000
+replace ingresosMóvil = ingresosMóvil/1000000000
+
+replace traf_salidaOMV = traf_salidaOMV/1000000
+replace ingresosOMV = ingresosOMV/1000000
 
 tsset date, q
 
+tw tsline traf_salidaPreponderante ingresosPreponderante traf_salidaMóvil ingresosMóvil, ///
+title("Ingreso vs tráfico en minutos (trimestral, 2013-2019), operadores vs preponderante") ///
+ytitle("Ingreso (pesos) y tráfico (minutos), miles de millones") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Tráfico preponderante") label(2 "Ingresos preponderante") label(3 "Tráfico otros operadores") label(4 "Ingresos otros operadores") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
 
 tw tsline ingporminMóvil ingporminPreponderante, ///
 title("Media de ingreso por minuto en telefonía movil (trimestral, 2013-2019), por tipo") ///
@@ -1590,20 +1604,33 @@ scheme(538) legend(label(1 "Grupos movil") label(2 "Preponderante") region(color
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información del IFT, BIT.")
 
-tw tsline ingporminMóvil ingporminPreponderante ingporminOMV, ///
-title("Media de ingreso por minuto en telefonía movil (trimestral, 2013-2019), por tipo") ///
-ytitle("Ingreso por minuto de tráfico movil de salida") ysize(12) ylabel(0 40 " ", format(%15.0gc) angle(0)) ///
+tw tsline ingporminOMV if date>=220, ///
+title("Media de ingreso por minuto de OMVs (trimestral, 2013-2019)") ///
+ytitle("Ingreso por minuto de OMVs") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
-scheme(538) legend(label(1 "Grupos movil") label(2 "Preponderante") label(2 "Grupos OMV") region(color(white))) ///
+scheme(538) legend(label(1 "Grupos movil") label(2 "Preponderante") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Nota: Elaboración propia con información del IFT, BIT.")
+
+tw tsline traf_salidaOMV ingresosOMV if date>=220, ///
+title("Ingreso vs tráfico en minutos (trimestral, 2013-2019), OMVs") ///
+ytitle("Ingreso (pesos) y tráfico (minutos), millones") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Tráfico OMV") label(2 "Ingresos OMV") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT, BIT.")
+
+
+
+
+
 
 * 2014 inicia tarifa 0 radiomovil dipsa
 * 1 enero 2015 eliminación larga distancia nacional
 * marzo 2016 lineamientos de OMV
 * agosto 2017 gana para no tener tarifa 0
 * 2016 ya también cambia la telefonía en que empiezan a dar "paquetes de servicios" con telefonía y sms ilimitado
-
+* noviembre 2014 emiten reglas de portabilidad
 
 
 
