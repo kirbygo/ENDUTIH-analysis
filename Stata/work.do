@@ -76,6 +76,9 @@ copy "https://bit.ift.org.mx/descargas/datos/tabs/TD_INGRESOS_TELECOM_ITE_VA.csv
 *Habrá de hacerse manualmente :(
 *Te odio IFT !!!
 
+*Se utiliza también una base de datos de generación propia que resume los
+* cambios en la tarifa de interconexión movil de 2013 a 2019
+
 cd $dir
 
 
@@ -435,6 +438,20 @@ destring ingresos_total_e, replace
 format ingresos_total_e %15.0fc
 
 save "ift\ingresos.dta", replace
+
+*********************************Adicional BASE PROPIA
+clear all
+import excel "C:\Users\kirby\Desktop\UN_2\data\inx_movil.xlsx", sheet("stata") firstrow
+gen year = yofd(Fecha)
+gen date = mofd(Fecha)
+format date %tm
+
+rename Fecha datereal
+*Se usa mes como tsset (date)
+
+sort date
+
+save "ift\inx_movil.dta", replace
 
 
 ********************************************************************************
@@ -1513,9 +1530,12 @@ save "tmp\ing_trim.dta", replace
 
 clear all
 use "ift\traf_mov.dta"
+merge m:1 date using "ift\inx_movil.dta"
+keep if _merge==3
+drop _merge
 replace date = qofd(datereal)
 format date %tq
-collapse (sum) traf_salida=traf_salida_e,by(grupo date)
+collapse (sum) traf_salida=traf_salida_e (mean) inx_otros inx_aep,by(grupo date)
 
 replace grupo = subinstr(grupo,"É","E",5)
 replace grupo = subinstr(grupo,"&","n",5)
@@ -1524,6 +1544,7 @@ replace grupo = subinstr(grupo," ","_",5)
 replace grupo = subinstr(grupo,"-","_",5)
 format traf_salida %15.0fc
 save "tmp\traf_mov_trim.dta", replace
+
 
 
 clear all
@@ -1538,10 +1559,11 @@ drop _merge
 gen ingpormin=ingresos/traf_salida
 replace ingpormin=. if ingpormin==0
 
-drop tipo
+drop tipo inx_otros inx_aep
 reshape wide traf_salida ingresos ingpormin, i(date) j(grupo) string
 
 tsset date, q
+
 
 tw tsline ingporminAMERICA_MOVIL ingporminATnT ingporminIUSACELL_UNEFON ingporminTELEFONICA, ///
 title("Ingreso por minuto de los principales grupos de telefonía movil (trimestral, 2013-2019)") ///
@@ -1560,6 +1582,9 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Nota: Elaboración propia con información del IFT, BIT.")
 
 
+
+
+
 clear all
 use "tmp\traf_mov_trim.dta"
 merge 1:1 grupo date using "tmp\ing_trim.dta"
@@ -1570,13 +1595,14 @@ keep if _merge==3
 drop _merge
 
 replace tipo="Preponderante" if grupo=="AMERICA_MOVIL"
+sort inx_aep
 
-collapse (sum) traf_salida ingresos,by(tipo date)
+collapse (sum) traf_salida ingresos (last) inx_aep inx_otros,by(tipo date)
 
 gen ingpormin=ingresos/traf_salida
 replace ingpormin=. if ingpormin==0
 
-reshape wide traf_salida ingresos ingpormin, i(date) j(tipo) string
+reshape wide traf_salida ingresos ingpormin inx_aep inx_otros, i(date) j(tipo) string
 replace traf_salidaPreponderante = traf_salidaPreponderante/1000000000
 replace ingresosPreponderante = ingresosPreponderante/1000000000
 
@@ -1586,7 +1612,33 @@ replace ingresosMóvil = ingresosMóvil/1000000000
 replace traf_salidaOMV = traf_salidaOMV/1000000
 replace ingresosOMV = ingresosOMV/1000000
 
+drop inx_otrosOMV inx_otrosMóvil inx_aepOMV inx_aepMóvil
+
+rename inx_aepPreponderante inx_aep
+rename inx_otrosPreponderante inx_otros
+
 tsset date, q
+
+
+
+tw tsline ingporminPreponderante inx_otros, ///
+title("Ingreso por minuto AEP vs terminación en resto (trimestral, 2013-2019)") ///
+ytitle("$/min") ysize(13) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Ing/min AEP") label(2 "ITX Resto") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT.")
+graph export "results\ingmin_inxAEP.png", as(png) wid(1000) replace
+
+tw tsline ingporminMóvil inx_aep, ///
+title("Ingreso por minuto del resto vs terminación en red de Telcel (trimestral, 2013-2019)") ///
+ytitle("$/min") ysize(13) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Ing/min otros") label(2 "ITX en Telcel") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT.")
+graph export "results\ingmin_inxOtros.png", as(png) wid(1000) replace
+
 
 tw tsline traf_salidaPreponderante ingresosPreponderante traf_salidaMóvil ingresosMóvil, ///
 title("Ingreso vs tráfico en minutos (trimestral, 2013-2019), operadores vs preponderante") ///
@@ -1622,6 +1674,29 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 
 
 
+gen porc_AEP = traf_salidaPreponderante / (traf_salidaMóvil + traf_salidaPreponderante)
+gen porc_Mov = traf_salidaMóvil / (traf_salidaMóvil + traf_salidaPreponderante)
+
+gen costo_AEP = traf_salidaPreponderante*porc_Mov*inx_otros
+gen net_AEP = ingresosPreponderante-costo_AEP
+gen retenAEP = (net_AEP/ingresosPreponderante)*100
+
+gen costo_Mov = traf_salidaMóvil*porc_AEP*inx_aep
+gen net_Mov = ingresosMóvil-costo_Mov
+gen retenMov = (net_Mov/ingresosMóvil)*100
+
+
+tw tsline retenAEP retenMov, ///
+title("Retención (trimestral, 2013-2019)") ///
+ytitle("Porcentaje retención ingresos") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "AEP") label(2 "Otros") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT.")
+graph export "results\reten.png", as(png) wid(1000) replace
+
+
+bro date ingporminPreponderante ingporminMóvil inx_aep inx_otros retenAEP retenMov
 
 
 
@@ -1631,7 +1706,6 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 * agosto 2017 gana para no tener tarifa 0
 * 2016 ya también cambia la telefonía en que empiezan a dar "paquetes de servicios" con telefonía y sms ilimitado
 * noviembre 2014 emiten reglas de portabilidad
-
 
 
 
