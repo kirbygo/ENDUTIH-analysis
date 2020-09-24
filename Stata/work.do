@@ -1700,6 +1700,77 @@ bro date ingporminPreponderante ingporminMóvil inx_aep inx_otros retenAEP reten
 
 
 
+
+
+
+
+
+
+
+clear all
+use "tmp\traf_mov_trim.dta"
+merge 1:1 grupo date using "tmp\ing_trim.dta"
+*Hay OMVs raros que tienen tráfico pero no ingresos
+*Otros que tienen ingresos pero no traf
+*Los borro
+keep if _merge==3
+drop _merge
+
+replace tipo="Preponderante" if grupo=="AMERICA_MOVIL"
+replace tipo="ATT" if tipo=="Móvil"
+replace tipo="Telefonica" if grupo=="TELEFONICA"
+
+drop if tipo=="OMV"
+
+collapse (sum) traf_salida ingresos (first) inx_aep inx_otros,by(tipo date)
+
+gen ingpormin=ingresos/traf_salida
+
+reshape wide traf_salida ingresos ingpormin, i(date) j(tipo) string
+
+replace traf_salidaPreponderante = traf_salidaPreponderante/1000000000
+replace ingresosPreponderante = ingresosPreponderante/1000000000
+
+replace traf_salidaATT = traf_salidaATT/1000000000
+replace ingresosATT = ingresosATT/1000000000
+
+replace traf_salidaTelefonica = traf_salidaTelefonica/1000000000
+replace ingresosTelefonica = ingresosTelefonica/1000000000
+
+tsset date, q
+
+
+gen porc_AEP = traf_salidaPreponderante / (traf_salidaATT + traf_salidaPreponderante + traf_salidaTelefonica)
+gen porc_ATT = traf_salidaATT / (traf_salidaATT + traf_salidaPreponderante + traf_salidaTelefonica)
+gen porc_Telefonica = traf_salidaTelefonica / (traf_salidaATT + traf_salidaPreponderante + traf_salidaTelefonica)
+
+
+gen costo_AEP = traf_salidaPreponderante*porc_ATT*inx_otros + traf_salidaPreponderante*porc_Telefonica*inx_otros
+gen net_AEP = ingresosPreponderante-costo_AEP
+gen retenAEP = (net_AEP/ingresosPreponderante)*100
+
+
+gen costo_ATT = traf_salidaATT*porc_AEP*inx_aep + traf_salidaATT*porc_Telefonica*inx_otros
+gen net_ATT = ingresosATT-costo_ATT
+gen retenATT = (net_ATT/ingresosATT)*100
+
+gen costo_Telefonica = traf_salidaTelefonica*porc_AEP*inx_aep + traf_salidaTelefonica*porc_ATT*inx_otros
+gen net_Telefonica = ingresosTelefonica-costo_Telefonica
+gen retenTelefonica = (net_Telefonica/ingresosTelefonica)*100
+
+
+tw tsline retenAEP retenTelefonica retenATT, ///
+title("Retención (trimestral, 2013-2019)") ///
+ytitle("Porcentaje retención ingresos") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "AEP") label(2 "Telefonica") label(3 "ATT") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Nota: Elaboración propia con información del IFT.")
+graph export "results\reten2.png", as(png) wid(1000) replace
+
+bro date ingporminPreponderante ingporminATT ingporminTelefonica inx_aep inx_otros retenAEP retenATT retenTelefonica
+
+
 * 2014 inicia tarifa 0 radiomovil dipsa
 * 1 enero 2015 eliminación larga distancia nacional
 * marzo 2016 lineamientos de OMV
