@@ -481,12 +481,12 @@ twoway tsline nbinternet nbmovil nbpaga nbtotal, tline(15jun2013) tline(15jul201
 
 * INPC Comunicaciones vs general
 tw tsline total comunic, ///
-title("Evolución INPC (General) y el subíndice INPC-Comunicaciones (Base = 15-jul-2018)") ///
-ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
-ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
-scheme(538) legend(label(1 "INPC") label(2 "INPC-Com") region(color(white))) ///
+title("General CPI and the sub-index CPI-Communications (Base = Jul-15-2018)") ///
+ytitle("CPI") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "CPI") label(2 "CPI-Comm") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del INEGI, INPC.")
+note("Source: Prepared by authors with data of the INEGI, INPC.")
 *Salvar
 graph export "results\inpc1.png", as(png) wid(1000) replace
 
@@ -502,12 +502,12 @@ graph export "results\inpc2.png", as(png) wid(1000) replace
 
 * INPC TV Paga vs general
 tw tsline total paga, ///
-title("Evolución INPC (General) e INPC TV Restringida (Base = 15-jul-2018)") ///
-ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
-ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
-scheme(538) legend(label(1 "INPC") label(2 "INPC-TV restr.") region(color(white))) ///
+title("General CPI and pay TV CPI (Base = July-15-2018)") ///
+ytitle("CPI") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "CPI") label(2 "Pay TV CPI") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del INEGI, INPC.")
+note("Source: Prepared by authors with data of the INEGI, INPC.")
 *Salvar
 graph export "results\inpc3.png", as(png) wid(1000) replace
 
@@ -746,12 +746,12 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 graph export "results\BAF2.png", as(png) wid(1000) replace
 
 sort date
-graph hbar ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
-title("Participación de los principales grupos en accesos BAF (mensual, 2013-2019)") ///
-ytitle("Participación en accesos BAF (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
-scheme(538) legend(label(1 "AMX") label(2 "GTV") label(3 "MCM") label(4 "TotPlay") region(color(white))) ///
+graph hbar ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019")) stack ///
+title("Participation in terms of BAF accesses, main groups (monthly, 2013-2019)") ///
+ytitle("Participation in BAF accesses (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Grupo Televisa") label(3 "Megacable") label(4 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
 *Salvar
 graph export "results\BAF3.png", as(png) wid(1500) replace
 
@@ -774,14 +774,14 @@ estimates store mcm
 reg logtTOTALPLAY trend, robust
 estimates store tpl
 
-coefplot (amx, label(AMX)) (gtv, label(GTV)) (mcm, label(MCM)) ///
+coefplot (amx, label(América Móvil)) (gtv, label(Grupo Televisa)) (mcm, label(Megacable)) ///
 (tpl, label(Total Play)), drop(_cons) xline(0) scheme(538) legend(region(color(white))) ///
-title("Tasa de crecimiento mensual promedio (2013-2019)") ///
-subtitle("Accesos de Banda Ancha Fija (BAF) por Grupo de Interés Económico") ///
+title("Monthly average growth rate (2013-2019)") ///
+subtitle("BAF accesses, main groups") ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT." ///
-"* Obtenido a partir de la regresión lny = a + bt + u, para cada grupo." ///
-"El degradado en cada punto son intervalos de confianza a 99%.") cismooth xsize(8) ///
+note("Source: Prepared by authors with data of the IFT, BIT." ///
+"* Results from the regression lny = a + bt + u, for each group." ///
+"The fading colours in each point represents confidence intervals (99%).") cismooth xsize(8) ///
 mlabel(strofreal(@b*100,"%11.2f")+" %") mlabpos(10)
 *Salvar
 graph export "results\crecimiento.png", as(png) wid(1500) replace
@@ -818,13 +818,13 @@ foreach perrito in tAIRECABLE tALESTRA tAMERICA_MOVIL tATnT tAXESAT tAXTEL tCABL
 	gen m`perrito' = `perrito'/1000000
 }
 
-graph hbar ptAMERICA_MOVIL ptATnT ptAXTEL ptGRUPO_TELEVISA ptMAXCOM ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
-title("Participación de los principales grupos en accesos BAF (mensual, 2013-2019)") ///
-subtitle("2 Mbps a 9.99 Mbps") ///
-ytitle("Participación en accesos BAF (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
-scheme(538) legend(label(1 "AMX") label(2 "AT&T") label(3 "Axtel") label(4 "GTV") label(5 "Maxcom") label(6 "Megacable") label(7 "TotalPlay") region(color(white))) ///
+graph hbar ptAMERICA_MOVIL ptATnT ptAXTEL ptGRUPO_TELEVISA ptMAXCOM ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019")) stack ///
+title("Participation in terms of BAF accesses, main groups (monthly, 2013-2019)") ///
+subtitle("From 2 Mbps to 9.99 Mbps") ///
+ytitle("Participation in BAF accesses (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "AT&T") label(3 "Axtel") label(4 "Grupo Televisa") label(5 "Maxcom") label(6 "Megacable") label(7 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
 *Salvar
 graph export "results\BAF_lento.png", as(png) wid(1500) replace
 
@@ -882,13 +882,13 @@ foreach perrito in tAIRECABLE tALESTRA tAMERICA_MOVIL tATnT tAXESAT tAXTEL tCABL
 	gen m`perrito' = `perrito'/1000000
 }
 
-graph hbar ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
-title("Participación de los principales grupos en accesos BAF (mensual, 2013-2019)") ///
-subtitle("10 a 100 Mbps") ///
-ytitle("Participación en accesos BAF (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
-scheme(538) legend(label(1 "AMX") label(2 "GTV") label(3 "Megacable") label(4 "TotalPlay") region(color(white))) ///
+graph hbar ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019")) stack ///
+title("Participation in terms of BAF accesses, main groups (monthly, 2013-2019)") ///
+subtitle("From 10 to 100 Mbps") ///
+ytitle("Participation in BAF accesses (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Grupo Televisa") label(3 "Megacable") label(4 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
 *Salvar
 graph export "results\BAF_rapido.png", as(png) wid(1500) replace
 
@@ -995,12 +995,12 @@ foreach perrito in tAIRECABLE tAXTEL tCABLECOM tCABLEVISION_RED tDISH_MVS tGRUPO
 	gen m`perrito' = `perrito'/1000000
 }
 
-graph hbar ptCABLECOM ptCABLEVISION_RED ptDISH_MVS ptGRUPO_TELEVISA ptMEGACABLE_MCM ptSTARGROUP ptTOTALPLAY, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
-title("Participación de los principales grupos en accesos TV Restringida (mensual, 2013-2019)") ///
-ytitle("Participación en accesos TV Restringida (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
-scheme(538) legend(label(1 "Cablecom") label(2 "Cablevisión") label(3 "Dish-MVS") label(4 "GTV") label(5 "MCM") label(6 "Stargroup") label(7 "TotalPlay") region(color(white))) ///
+graph hbar ptCABLECOM ptCABLEVISION_RED ptDISH_MVS ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019")) stack ///
+title("Participation of main groups in terms of accesses of pay TV (monthly, 2013-2019)") ///
+ytitle("Participation in accesses pay TV (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "Cablecom") label(2 "Cablevisión") label(3 "Dish-MVS") label(4 "Grupo Televisa") label(5 "Megacable") label(6 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
 *Salvar
 graph export "results\TV_rest-acc1.png", as(png) wid(1500) replace
 
@@ -1064,12 +1064,12 @@ note("Nota: Elaboración propia con información del IFT, BIT.")
 *Salvar
 graph export "results\porc-vel.png", as(png) wid(1500) replace
 
-graph hbar v1 v2 v3 v4, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
-title("Accesos de banda ancha fija por velocidad (mensual, 2013-2019)") ///
-ytitle("Millones de accesos") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+graph hbar v1 v2 v3 v4, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019")) stack ///
+title("BAF accesses by speed (monthly, 2013-2019)") ///
+ytitle("Millions of accesses") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "256kbps-1.99Mbps") label(2 "2-9.99Mbps") label(3 "10-100Mbps") label(4 ">100Mbps") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT.")
+note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\porc-vel2.png", as(png) wid(1500) replace
 
@@ -1195,12 +1195,12 @@ clear all
 use "ift\pene_tv_rest.dta"
 keep if year>=2013
 
-graph hbar p_h_tvres_e, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019")) stack ///
-title("Penetración de TV restringida por cada 100 hogares (mensual, 2013-2019)") ///
-ytitle("Accesos por cada 100 hogares") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+graph hbar p_h_tvres_e, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019")) stack ///
+title("Penetration of pay TV per 100 households (monthly, 2013-2019)") ///
+ytitle("Accesses per 100 houses") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT.")
+note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\TV_rest-pene.png", as(png) wid(1500) replace
 
@@ -1218,12 +1218,12 @@ drop tecno
 reshape wide accesos, i(date) j(jota)
 drop accesos4 accesos5
 
-graph hbar accesos1 accesos2 accesos3, over(date, relabel(1 "Enero 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Diciembre 2019"))  ///
-title("Accesos de TV restringida por tipo de tecnología (mensual, 2013-2019)") ///
-ytitle("Millones de accesos") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+graph hbar accesos1 accesos2 accesos3, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019"))  ///
+title("Accesses of pay TV by technology (monthly, 2013-2019)") ///
+ytitle("Millons of accesses") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT.") legend( label(1 "Cable") label(2 "Satélite") label(3 "IPTV"))
+note("Source: Prepared by authors with data of the IFT, BIT.") legend( label(1 "Cable") label(2 "Satellite") label(3 "IPTV"))
 *Salvar
 graph export "results\TV_rest-tecno.png", as(png) wid(1500) replace
 
@@ -1279,12 +1279,12 @@ drop date
 reshape long c , i(y) j(usu) string
 reshape wide c , i(usu) j(y)
 
-graph bar c2013 c2014 c2015 c2016 c2017 c2018 c2019, over(usu, relabel(1 "GTV" 2 "Dish" 3 "Megacable" 4 "TotalPlay")) ///
-title("Cambio en número de suscriptores (a diciembre de cada año)") ///
-ytitle("Cambio en suscriptores (miles)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+graph bar c2013 c2014 c2015 c2016 c2017 c2018 c2019, over(usu, relabel(1 "Grupo Televisa" 2 "Dish" 3 "Megacable" 4 "Total Play")) ///
+title("Change in number of subscribers (December of each year)") ///
+ytitle("Change in (thousands of) subscribers") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "12-13") label(2 "13-14") label(3 "14-15") label(4 "15-16") label(5 "16-17") label(6 "17-18")label(7 "18-19") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT." "Para 2013 es el comparativo entre enero 2013 y diciembre del mismo año.")
+note("Source: Prepared by authors with data of the IFT, BIT." "For 2013, the comparison is between January 2013 and December 2013.")
 *Salvar
 graph export "results\TV_rest-cambio-2.png", as(png) wid(1500) replace
 
@@ -1292,12 +1292,12 @@ clear all
 use "ift\ihh_tv_rest.dta"
 keep if year>=2012
 
-graph bar ihh_tvres_e , over(date, relabel(1 "1T 2012" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 "4T 2019")) ///
-title("Índice de Herfindahl-Hirschman, TV restringida (trimestral)") ///
-ytitle("IHH") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+graph bar ihh_tvres_e , over(date, relabel(1 "1Q 2012" 2 " " 3 " " 4 " " 5 "1Q 2013" 6 " " 7 " " 8 " " 9 "1Q 2014" 10 " " 11 " " 12 " " 13 "1Q 2015" 14 " " 15 " " 16 " " 17 "1Q 2016" 18 " " 19 " " 20 " " 21 "1Q 2017" 22 " " 23 " " 24 " " 25 "1Q 2018" 26 " " 27 " " 28 " " 29 "1Q 2019" 30 " " 31 " " 32 "4T 2019")) ///
+title("Herfindahl-Hirschman Index, pay TV (quarterly)") ///
+ytitle("HHI") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT.")
+note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\TV_rest-ihh.png", as(png) wid(1500) replace
 
@@ -1333,12 +1333,12 @@ foreach perrito in totAIRBUS totAMERICA_MOVIL totATnT totBUENO_CELL totCELMAX to
 	gen m`perrito' = `perrito'/1000000
 }
 
-graph hbar ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, over(date, relabel(1 "Ene 2014" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 "Dic 2019")) stack ///
-title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
-ytitle("Participación en líneas (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
-scheme(538) legend(label(1 "Am. Mov.") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
+graph hbar ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, over(date, relabel(1 "Jan 2014" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 "Dec 2019")) stack ///
+title("Participation in terms of lines with Mobile BroadBand (monthly, 2014-2019)") ///
+ytitle("Lines with MBB (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT." "*Las participaciones no suman 100 porque la participación restante se divide en" "diversos concesionarios pequeños.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
 *Salvar
 graph export "results\part_BAM.png", as(png) wid(1500) replace
 
@@ -1388,12 +1388,12 @@ gen p3g = (tresg/tot)*100
 gen p4g = (cuatrog/tot)*100
 format p3g p4g p2g %4.2f
 
-graph hbar p2g p3g p4g, over(date, relabel(1 "Ene 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dic 2019")) stack ///
-title("Tráfico de BAM por velocidad (mensual, 2015-2019)") ///
-ytitle("Porcentaje (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
+graph hbar p2g p3g p4g, over(date, relabel(1 "Jan 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dec 2019")) stack ///
+title("Transit Mobile BroadBand by speed (monthly, 2015-2019)") ///
+ytitle("Percentage (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "2G") label(2 "3G") label(3 "4G") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT, BIT.")
+note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\BAM-vel.png", as(png) wid(1500) replace
 
@@ -1622,21 +1622,21 @@ tsset date, q
 
 
 tw tsline ingporminPreponderante inx_otros, ///
-title("Ingreso por minuto AEP vs terminación en resto (trimestral, 2013-2019)") ///
-ytitle("$/min") ysize(13) ylabel(#15 , format(%15.0gc) angle(0)) ///
-ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
-scheme(538) legend(label(1 "Ing/min AEP") label(2 "ITX Resto") region(color(white))) ///
+title("Income per minute América Móvil vs Interconnection Rate (quarterly, 2013-2019)") ///
+ytitle("Pesos/min") ysize(13) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "Inc/min A. M.") label(2 "ITX Rest") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT.")
+note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\ingmin_inxAEP.png", as(png) wid(1000) replace
 
 tw tsline ingporminMóvil inx_aep, ///
-title("Ingreso por minuto del resto vs terminación en red de Telcel (trimestral, 2013-2019)") ///
+title("Inc/min of the rest vs Interconnection Rate in A. M. network (quarterly, 2013-2019)") ///
 ytitle("$/min") ysize(13) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
-scheme(538) legend(label(1 "Ing/min otros") label(2 "ITX en Telcel") region(color(white))) ///
+scheme(538) legend(label(1 "Inc/min Rest") label(2 "ITX in Am. Mov.") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT.")
+note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\ingmin_inxOtros.png", as(png) wid(1000) replace
 
 
@@ -1687,12 +1687,12 @@ gen retenMov = (net_Mov/ingresosMóvil)*100
 
 
 tw tsline retenAEP retenMov, ///
-title("Retención (trimestral, 2013-2019)") ///
-ytitle("Porcentaje retención ingresos") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
-ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
-scheme(538) legend(label(1 "AEP") label(2 "Otros") region(color(white))) ///
+title("Retention (quarterly, 2013-2019)") ///
+ytitle("Income retention percentage") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Others") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Nota: Elaboración propia con información del IFT.")
+note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\reten.png", as(png) wid(1000) replace
 
 
@@ -2690,7 +2690,71 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 
 
+clear all
+use "db\inpc.dta"
+gen time = _n
+tsset time
+drop if year>=2020
 
+*Hay un error en 2Q nov 2012 a 1Q ene 2013
+tsline comunic
+
+replace comunic = . in 46/49
+
+mipolate comunic time, generate(aver) spline
+
+tsline comunic aver
+replace comunic = aver
+drop aver
+*Estacionariedad
+dfuller comunic, trend l(1)
+dfuller comunic, trend l(30)
+pperron comunic, trend l(1)
+pperron comunic, trend l(30)
+
+gen difcomunic = D.comunic
+
+dfuller difcomunic, trend l(1)
+dfuller difcomunic, trend l(30)
+pperron difcomunic, trend l(1)
+pperron difcomunic, trend l(30)
+*Esta serie es estacionaria
+
+corrgram comunic
+corrgram difcomunic
+
+arima comunic, arima(2, 1, 0)
+
+*Pruebas de correcta especificación
+*Estabilidad
+estat aroots
+*Estable porque mod eigenval <1
+*Residuales
+capture drop res
+predict res, r
+*Histograma residuales
+histogram res, bin(200)
+*Correlograma residuales
+corrgram res
+*Prueba ruido blanco
+wntestb res, msize(tiny)
+*Sí es ruido blanco porque P(Bartlet)>0.05
+
+gen la1difcomunic = l.difcomunic
+gen la2difcomunic = l.la1difcomunic
+gen la3difcomunic = l.la2difcomunic
+gen la4difcomunic = l.la3difcomunic
+
+regress difcomunic la1difcomunic la2difcomunic , robust
+estat sbsingle , slr gen(Lr_est) ltrim(5) rtrim(5)
+
+tw (line Lr_est date, lw(medthin)) ///
+(line comunic date, lw(medthin) yax(2)), ///
+title("Unknown structural break in telecommunication services") xtitle("Date") ysize(12) ytitle("LR Statistic", axis(1)) ytitle("CPI", axis(2)) ///
+ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#6 , angle(25)) xsize(20) ///
+scheme(538) legend(label(1 "LR Statistic") label(2 "CPI Telecomm Serv."))
+
+graph export "Camb_desc_telecom.png", as(png) wid(2000) replace
 
 
 
@@ -2834,9 +2898,9 @@ estat sbsingle , slr gen(Lr_est1) ltrim(5) rtrim(5)
 
 tw (line Lr_est1 date, lw(medthin)) ///
 (line internet date, lw(medthin) yax(2)), ///
-title("Cambio estructural desconocido del INPC de servicios de internet") xtitle("Fecha") ysize(12) ytitle("Estadístico LR", axis(1)) ytitle("INPC", axis(2)) ///
+title("Unknown Structural Break of the CPI of Internet Services") xtitle("Date") ysize(12) ytitle("LR Statistic", axis(1)) ytitle("CPI", axis(2)) ///
 ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#6 , angle(25)) xsize(20) ///
-scheme(538) legend(label(1 "Estimador LR") label(2 "INPC de serv. inter."))
+scheme(538) legend(label(1 "LR Statistic") label(2 "CPI Inter. Serv."))
 
 graph export "Camb_desc_int.png", as(png) wid(2000) replace
 
