@@ -555,6 +555,55 @@ graph export "results\inpc7.png", as(png) wid(1000) replace
 
 
 
+
+
+
+
+
+* INPC Comunicaciones vs TV Paga
+tw tsline comunic paga, ///
+title("INPC Telecomunicaciones vs INPC de STAR (Base = Jul-15-2018)") ///
+ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "INPC-Telecomm") label(2 "INPC-STAR") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Fuente: Elaboración de la oficina del Comisionado Robles, con información del INEGI.")
+*Salvar
+graph export "results\inpcAle.png", as(png) wid(1000) replace
+
+tw tsline nbcomunic nbpaga, ///
+title("INPC Telecomunicaciones vs INPC de STAR (Base = 15-ene-2011)") ///
+ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Fecha") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "INPC-Telecomm") label(2 "INPC-STAR") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Fuente: Elaboración de la oficina del Comisionado Robles, con información del INEGI.")
+*Salvar
+graph export "results\inpcAle2.png", as(png) wid(1000) replace
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ************************************************************************ BIT IFT
 *Hacer una de líneas movil, líneas internet movil, línea fija
 * internet fijo y TV de paga
@@ -2629,6 +2678,31 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 *graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
 *graph close
+
+
+*ARPU
+
+
+
+
+*ARMB
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
