@@ -1828,6 +1828,134 @@ bro date ingporminPreponderante ingporminATT ingporminTelefonica inx_aep inx_otr
 * noviembre 2014 emiten reglas de portabilidad
 
 
+*ARPU
+clear all
+use "ift\lin_int_mov.dta"
+replace date = qofd(datereal)
+format date %tq
+collapse (sum) lineas_bam=l_total_e, by(grupo date)
+
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+format lineas_bam %15.0fc
+
+merge 1:1 grupo date using "tmp\ing_trim.dta"
+
+keep if _merge==3
+drop _merge
+
+replace grupo="ATnT" if grupo=="IUSACELL_UNEFON"
+replace grupo="ATnT" if grupo=="NEXTEL"
+
+collapse (sum) lineas_bam ingresos, by(grupo date)
+
+gen arpu=ingresos/lineas_bam
+
+drop ingresos lineas_bam
+reshape wide arpu, i(date) j(grupo) string
+
+drop in 1/4
+
+tsset date, q
+
+tw tsline arpuAMERICA_MOVIL arpuTELEFONICA arpuATnT, ///
+title("Average Revenue per User of Mobile Broadband (ARPU, quarterly, 2014-2019)") ///
+ytitle("ARPU") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") label(3 "AT&T") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Source: Prepared by authors with data of the IFT, BIT.")
+graph export "results\arpu.png", as(png) wid(1000) replace
+
+
+*ARTB
+clear all
+use "ift\datos_int_mov.dta"
+replace date = qofd(datereal)
+format date %tq
+collapse (sum) traf2g=traf_tb_2g_e traf3g=traf_tb_3g_e traf4g=traf_tb_4g_e traftot=traf_tb_e, by(grupo date)
+
+replace grupo = subinstr(grupo,"É","E",5)
+replace grupo = subinstr(grupo,"&","n",5)
+replace grupo = subinstr(grupo,"Ó","O",5)
+replace grupo = subinstr(grupo," ","_",5)
+replace grupo = subinstr(grupo,"-","_",5)
+format traf2g traf3g traf4g traftot %15.0fc
+
+merge 1:1 grupo date using "tmp\ing_trim.dta"
+
+keep if _merge==3
+drop _merge
+
+replace grupo="ATnT" if grupo=="IUSACELL_UNEFON"
+replace grupo="ATnT" if grupo=="NEXTEL"
+
+collapse (sum) traf2g traf3g traf4g traftot ingresos, by(grupo date)
+
+gen artb2g=ingresos/(traf2g*1000)
+gen artb3g=ingresos/(traf3g*1000)
+gen artb4g=ingresos/(traf4g*1000)
+gen artb=ingresos/(traftot*1000)
+
+drop ingresos traf2g traf3g traf4g traftot
+reshape wide artb2g artb3g artb4g artb, i(date) j(grupo) string
+
+format artb2gAMERICA_MOVIL artb3gAMERICA_MOVIL artb4gAMERICA_MOVIL artbAMERICA_MOVIL artb2gATnT artb3gATnT artb4gATnT artbATnT artb2gBUENO_CELL artb3gBUENO_CELL artb4gBUENO_CELL artbBUENO_CELL artb2gCIERTO artb3gCIERTO artb4gCIERTO artbCIERTO artb2gFLASH_MOBILE artb3gFLASH_MOBILE artb4gFLASH_MOBILE artbFLASH_MOBILE artb2gFREEDOM artb3gFREEDOM artb4gFREEDOM artbFREEDOM artb2gMAXCOM artb3gMAXCOM artb4gMAXCOM artbMAXCOM artb2gMAZ_TIEMPO artb3gMAZ_TIEMPO artb4gMAZ_TIEMPO artbMAZ_TIEMPO artb2gMEGACABLE_MCM artb3gMEGACABLE_MCM artb4gMEGACABLE_MCM artbMEGACABLE_MCM artb2gMEGATEL artb3gMEGATEL artb4gMEGATEL artbMEGATEL artb2gOUI artb3gOUI artb4gOUI artbOUI artb2gQBO_CEL artb3gQBO_CEL artb4gQBO_CEL artbQBO_CEL artb2gSIMPATI artb3gSIMPATI artb4gSIMPATI artbSIMPATI artb2gTELEFONICA artb3gTELEFONICA artb4gTELEFONICA artbTELEFONICA artb2gVIRGIN_MOBILE artb3gVIRGIN_MOBILE artb4gVIRGIN_MOBILE artbVIRGIN_MOBILE artb2gWEEX artb3gWEEX artb4gWEEX artbWEEX %15.0fc
+
+
+tsset date, q
+
+tw tsline artb2gAMERICA_MOVIL artb2gTELEFONICA, ///
+title("Average Revenue per MegaByte 2G, Mobile Broadband (ARMB-2G, quarterly, 2015-2019)") ///
+ytitle("ARMB-2G") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Source: Prepared by authors with data of the IFT, BIT.")
+graph export "results\armb2g.png", as(png) wid(1000) replace
+
+tw tsline artb3gAMERICA_MOVIL artb3gTELEFONICA artb3gATnT, ///
+title("Average Revenue per MegaByte 3G, Mobile Broadband (ARMB-3G, quarterly, 2015-2019)") ///
+ytitle("ARMB-3G") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") label(3 "AT&T") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Source: Prepared by authors with data of the IFT, BIT.")
+graph export "results\armb3g.png", as(png) wid(1000) replace
+
+gen dia = dofq(date)
+gen year = yofd(dia)
+
+tw tsline artb4gAMERICA_MOVIL artb4gTELEFONICA artb4gATnT if year>=2017, ///
+title("Average Revenue per MegaByte 4G, Mobile Broadband (ARMB-4G, quarterly, 2017-2019)") ///
+ytitle("ARMB-4G") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") label(3 "AT&T") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Source: Prepared by authors with data of the IFT, BIT.")
+graph export "results\armb4g.png", as(png) wid(1000) replace
+
+tw tsline artbAMERICA_MOVIL artbTELEFONICA artbATnT, ///
+title("Average Revenue per MegaByte, Mobile Broadband (ARMB, quarterly, 2015-2019)") ///
+ytitle("ARMB") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") label(3 "AT&T") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Source: Prepared by authors with data of the IFT, BIT.")
+graph export "results\armbtot.png", as(png) wid(1000) replace
+
+tw tsline artbAMERICA_MOVIL artbTELEFONICA artbATnT if year>=2017, ///
+title("Average Revenue per MegaByte, Mobile Broadband (ARMB, quarterly, 2017-2019)") ///
+ytitle("ARMB") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
+scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") label(3 "AT&T") region(color(white))) ///
+graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Source: Prepared by authors with data of the IFT, BIT.")
+graph export "results\armbtotzoom.png", as(png) wid(1000) replace
+
 
 
 
@@ -2059,8 +2187,6 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 graph export "results\telmovporc.png", as(png) wid(1500) replace name(_mp_2)
 graph close
-
-
 
 *JUNTAS
 svy : total TV_rest ifija imovil tfija tmovil, over(year) cformat(%9.0fc) level(90)
@@ -2678,82 +2804,6 @@ note("Nota: Elaboración propia con información de la ENDUTIH, INEGI.")
 
 *graph export "results\tvrestporc.png", as(png) wid(1500) replace name(_mp_2)
 *graph close
-
-
-*ARPU
-
-
-
-
-*ARMB
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
