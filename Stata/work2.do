@@ -157,10 +157,6 @@ gen year = yofd(fecha)
 gen month = mofd(fecha)
 drop if year ==2009
 
-gen prepo = 0
-*Prepo 6 marzo 2014
-replace prepo = 1 if fecha>=19788
-
 *calendarito
 bcal create "stockcal.stbcal", from(fecha) replace
 bcal load stockcal
@@ -198,8 +194,8 @@ gen moy = month(fecha)
 tab dow, g(m)
 tab moy, g(mo)
 
-reg dclose ldclose dvolume dhigh dlow trend m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo1, robust
-estat sbsingle, ltrim(39) rtrim(49)
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11, robust
+estat sbsingle, ltrim(30) rtrim(48)
 *bcaldate empieza en ceros
 *18 abril 2018 gana amparo tarifa cero Telmex Telnor
 *16 agosto 2017 gana amparo tarifa cero Telcel
@@ -210,8 +206,26 @@ estat sbsingle, ltrim(39) rtrim(49)
 *11 jun 2013 reforma telecom, 865 en obs, 864 en bcaldate
 
 
-estat sbknown, break(1049) breakvars(,cons)
-estat sbknown, break(864) breakvars(,cons)
+estat sbknown, break(1049)
+estat sbknown, break(864)
+
+tsline close, ///
+tline(1050) ttext(14 1050 "Substantial power declared (March 6th, 2014)", place(west) orient(vertical) size(vsmall)) ///
+tline(865) ttext(14 865 "Telecom reform (June 11th, 2013)", place(west) orient(vertical) size(vsmall)) ///
+tline(1259) ttext(14 1259 "Begining of zero inx price (Jan 1st, 2015)", place(west) orient(vertical) size(vsmall)) ///
+tline(1139) ttext(14 1139 "New Federal Law of Telecom (July 14th, 2014)", place(west) orient(vertical) size(vsmall)) ///
+legend(label(1 "AMX price") label(2 "Price mean") region(color(white))) ///
+title("AMX stock price index") ///
+ytitle("Price (USD)") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
+ttitle("Date") xsize(20) tlabel(#18 , angle(25)) ///
+scheme(538) graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
+note("Source: Prepared by authors with data of the NYSE.")
+
+graph export "AMX-timeline.png", as(png) wid(4000) replace
+
+gen prepo = 0
+*Prepo 6 marzo 2014 obs 1050
+replace prepo = 1 if fecha>=19788
 
 gen prepo2 = 0
 replace prepo2 = 1 if fecha>=19520
@@ -221,12 +235,84 @@ gen prepo3 = 0
 replace prepo3 = 1 if year>=2015
 *2 ene 2015 es obs 1259
 
-*Prepo "1" es 6 marzo 2014 es 1050
-
 gen prepo4 = 0
 replace prepo4 = 1 if fecha>=19918
 *14 julio 2014 LFTyR obs 1139, fecha 19918
 
+
+
+
+
+*******PREPO
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo==0, robust
+
+cap drop perro y
+predict perro
+
+gen y = .
+replace y = close in 1049
+local enesota = _N
+forvalues i = 1050/`enesota' {
+	local j = `i' - 1
+	replace y = y[`j'] + perro[`i'] in `i'
+}
+
+tsline y close, ///
+title("Prediction if AMX stock had kept its behaviour pre-dominance declared") ///
+ttitle("Date") ytitle("AMX stock (USD)") ysize(12) ///
+ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#12 , angle(25)) xsize(20) ///
+scheme(538) legend(label(2 "Actual price") label(1 "Prediction")) ///
+tlabel(#18 , angle(25))
+
+graph export "prepo.png", as(png) wid(4000) replace
+
+*******PREPO2
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo2==0, robust
+
+cap drop perro y
+predict perro
+
+gen y = .
+replace y = close in 864
+local enesota = _N
+forvalues i = 865/`enesota' {
+	local j = `i' - 1
+	replace y = y[`j'] + perro[`i'] in `i'
+}
+
+tsline y close, ///
+title("Prediction if AMX stock had kept its behaviour pre-dominance declared") ///
+ttitle("Date") ytitle("AMX stock (USD)") ysize(12) ///
+ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#12 , angle(25)) xsize(20) ///
+scheme(538) legend(label(2 "Actual price") label(1 "Prediction")) ///
+tlabel(#18 , angle(25))
+
+graph export "prepo2.png", as(png) wid(4000) replace
+
+*******PREPO3
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo3==0, robust
+
+cap drop perro y
+predict perro
+
+gen y = .
+replace y = close in 1258
+local enesota = _N
+forvalues i = 1259/`enesota' {
+	local j = `i' - 1
+	replace y = y[`j'] + perro[`i'] in `i'
+}
+
+tsline y close, ///
+title("Prediction if AMX stock had kept its behaviour pre-dominance declared") ///
+ttitle("Date") ytitle("AMX stock (USD)") ysize(12) ///
+ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#12 , angle(25)) xsize(20) ///
+scheme(538) legend(label(2 "Actual price") label(1 "Prediction")) ///
+tlabel(#18 , angle(25))
+
+graph export "prepo3.png", as(png) wid(4000) replace
+
+*******PREPO4
 reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo4==0, robust
 
 cap drop perro y
@@ -244,9 +330,10 @@ tsline y close, ///
 title("Prediction if AMX stock had kept its behaviour pre-dominance declared") ///
 ttitle("Date") ytitle("AMX stock (USD)") ysize(12) ///
 ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#12 , angle(25)) xsize(20) ///
-scheme(538) legend(label(2 "Actual price") label(1 "Prediction"))
+scheme(538) legend(label(2 "Actual price") label(1 "Prediction")) ///
+tlabel(#18 , angle(25))
 
-graph export "prediction.png", as(png) wid(4000) replace
+graph export "prepo4.png", as(png) wid(4000) replace
 
 
 
