@@ -240,8 +240,22 @@ replace prepo4 = 1 if fecha>=19918
 *14 julio 2014 LFTyR obs 1139, fecha 19918
 
 
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo==0, robust
+estimates store model1
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo2==0, robust
+estimates store model2
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo3==0, robust
+estimates store model3
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo4==0, robust
+estimates store model4
 
-
+putdocx begin
+putdocx paragraph
+putdocx text ("Resultados del modelo según el corte"), bold
+putdocx paragraph
+estimates table model2 model1 model4 model3, b(%10.3f) star stats(N r2 r2_a) varlabel allbaselevels
+putdocx table tbl1 = etable
+putdocx save "regress.docx", replace
 
 *******PREPO
 reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo==0, robust
