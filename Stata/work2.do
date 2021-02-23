@@ -239,6 +239,10 @@ gen prepo4 = 0
 replace prepo4 = 1 if fecha>=19918
 *14 julio 2014 LFTyR obs 1139, fecha 19918
 
+gen prepo5 = 0
+replace prepo5 = 1 if fecha>=20877
+*27 febrero 2017 orden separación funcional obs 1800, fecha 20877
+
 
 reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo==0, robust
 estimates store model1
@@ -350,7 +354,28 @@ tlabel(#18 , angle(25))
 graph export "prepo4.png", as(png) wid(4000) replace
 
 
+*******PREPO5
+reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo5==0, robust
 
+cap drop perro y
+predict perro
+
+gen y = .
+replace y = close in 1799
+local enesota = _N
+forvalues i = 1800/`enesota' {
+	local j = `i' - 1
+	replace y = y[`j'] + perro[`i'] in `i'
+}
+
+tsline y close, ///
+title("Prediction if AMX stock had kept its behaviour pre-dominance declared") ///
+ttitle("Date") ytitle("AMX stock (USD)") ysize(12) ///
+ylabel(#10 , format(%15.0gc) angle(0)) tlabel(#18 , angle(25)) xsize(20) ///
+scheme(538) legend(label(2 "Actual price") label(1 "Prediction")) ///
+tlabel(#18 , angle(25))
+
+graph export "prepo5.png", as(png) wid(4000) replace
 
 
 
