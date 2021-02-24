@@ -1,12 +1,8 @@
 *Preamble
 *Cambio directorio
-* Prueba si el escritorio está en C o en D y establece el necesario
 clear all
-cap cd "D:\Users\\`c(username)'\Desktop"
-if _rc != 0 {
-	cd "C:\Users\\`c(username)'\Desktop" 
-	*cap ^ else if _rc != 0 {cd "E:\Users\\`c(username)'\Desktop" }
-}
+cap cd "D:\0kirbygo\Desktop"
+
 *Crear carpeta "Work" en Escritorio
 cap mkdir UN_2
 cd UN_2
@@ -490,6 +486,9 @@ note("Source: Prepared by authors with data of the INEGI, INPC.")
 *Salvar
 graph export "results\inpc1.png", as(png) wid(1000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\27.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\27.png", as(png) wid(5000) replace
+
 tw tsline nbtotal nbcomunic, ///
 title("Evolución INPC (General) y el subíndice INPC-Comunicaciones (Base = 15-ene-2011)") ///
 ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -510,6 +509,9 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the INEGI, INPC.")
 *Salvar
 graph export "results\inpc3.png", as(png) wid(1000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\16.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\16.png", as(png) wid(5000) replace
 
 tw tsline nbtotal nbpaga, ///
 title("Evolución INPC (General) e INPC TV Restringida (Base = 15-ene-2011)") ///
@@ -804,6 +806,9 @@ note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don'
 *Salvar
 graph export "results\BAF3.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\5.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\5.png", as(png) wid(5000) replace
+
 sort date
 gen trend = _n
 foreach perrito in tAMERICA_MOVIL tGRUPO_TELEVISA tMEGACABLE_MCM tTOTALPLAY {
@@ -835,7 +840,8 @@ mlabel(strofreal(@b*100,"%11.2f")+" %") mlabpos(10)
 *Salvar
 graph export "results\crecimiento.png", as(png) wid(1500) replace
 
-
+graph save "D:\0kirbygo\Desktop\graphs_UN\6.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\6.png", as(png) wid(5000) replace
 
 
 clear all
@@ -877,6 +883,8 @@ note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don'
 *Salvar
 graph export "results\BAF_lento.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\7.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\7.png", as(png) wid(5000) replace
 
 tw tsline ptAMERICA_MOVIL ptATnT ptAXTEL ptGRUPO_TELEVISA ptMAXCOM ptMEGACABLE_MCM ptTOTALPLAY, ///
 title("Participación de los principales grupos en número de accesos BAF") ///
@@ -899,7 +907,6 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Nota: Elaboración propia con información del IFT, BIT.")
 *Salvar
 graph export "results\BAF_lento3.png", as(png) wid(1000) replace
-
 
 
 clear all
@@ -940,6 +947,9 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
 *Salvar
 graph export "results\BAF_rapido.png", as(png) wid(1500) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\8.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\8.png", as(png) wid(5000) replace
 
 
 tw tsline ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, ///
@@ -1053,6 +1063,8 @@ note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don'
 *Salvar
 graph export "results\TV_rest-acc1.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\12.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\12.png", as(png) wid(5000) replace
 
 tw tsline ptCABLECOM ptCABLEVISION_RED ptDISH_MVS ptGRUPO_TELEVISA ptMEGACABLE_MCM ptSTARGROUP ptTOTALPLAY, ///
 title("Participación de los principales grupos en accesos TV Restringida (mensual, 2013-2019)") ///
@@ -1122,6 +1134,8 @@ note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\porc-vel2.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\9.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\9.png", as(png) wid(5000) replace
 
 
 * Tengo que juntar lo siguiente:
@@ -1253,6 +1267,8 @@ note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\TV_rest-pene.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\10.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\10.png", as(png) wid(5000) replace
 
 clear all
 use "ift\acc_tv_rest.dta"
@@ -1276,6 +1292,8 @@ note("Source: Prepared by authors with data of the IFT, BIT.") legend( label(1 "
 *Salvar
 graph export "results\TV_rest-tecno.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\11.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\11.png", as(png) wid(5000) replace
 
 clear all
 use "ift\sus_tv_rest.dta"
@@ -1337,6 +1355,9 @@ note("Source: Prepared by authors with data of the IFT, BIT." "For 2013, the com
 *Salvar
 graph export "results\TV_rest-cambio-2.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\13.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\13.png", as(png) wid(5000) replace
+
 clear all
 use "ift\ihh_tv_rest.dta"
 keep if year>=2012
@@ -1350,6 +1371,8 @@ note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\TV_rest-ihh.png", as(png) wid(1500) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\15.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\15.png", as(png) wid(5000) replace
 
 *Gráficas adicionales BAM
 clear all
@@ -1390,6 +1413,9 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
 *Salvar
 graph export "results\part_BAM.png", as(png) wid(1500) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\17.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\17.png", as(png) wid(5000) replace
 
 tw tsline ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, ///
 title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
@@ -1445,6 +1471,9 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the IFT, BIT.")
 *Salvar
 graph export "results\BAM-vel.png", as(png) wid(1500) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\18.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\18.png", as(png) wid(5000) replace
 
 graph hbar dosg tresg cuatrog, over(date, relabel(1 "Ene 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dic 2019")) stack ///
 title("Tráfico de BAM por velocidad (mensual, 2015-2019)") ///
@@ -1679,6 +1708,9 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\ingmin_inxAEP.png", as(png) wid(1000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\19.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\19.png", as(png) wid(5000) replace
+
 tw tsline ingporminMóvil inx_aep, ///
 title("Inc/min of the rest vs Interconnection Rate in A. M. network (quarterly, 2013-2019)") ///
 ytitle("$/min") ysize(13) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -1687,6 +1719,9 @@ scheme(538) legend(label(1 "Inc/min Rest") label(2 "ITX in Am. Mov.") region(col
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\ingmin_inxOtros.png", as(png) wid(1000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\20.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\20.png", as(png) wid(5000) replace
 
 
 tw tsline traf_salidaPreponderante ingresosPreponderante traf_salidaMóvil ingresosMóvil, ///
@@ -1743,6 +1778,9 @@ scheme(538) legend(label(1 "América Móvil") label(2 "Others") region(color(whi
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
 note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\reten.png", as(png) wid(1000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\21.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\21.png", as(png) wid(5000) replace
 
 
 bro date ingporminPreponderante ingporminMóvil inx_aep inx_otros retenAEP retenMov
@@ -1870,6 +1908,8 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\arpu.png", as(png) wid(1000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\24.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\24.png", as(png) wid(5000) replace
 
 *ARTB
 clear all
@@ -1947,6 +1987,9 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\armbtot.png", as(png) wid(1000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\22.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\22.png", as(png) wid(5000) replace
+
 tw tsline artbAMERICA_MOVIL artbTELEFONICA artbATnT if year>=2017, ///
 title("Average Revenue per MegaByte, Mobile Broadband (ARMB, quarterly, 2017-2019)") ///
 ytitle("ARMB") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -1956,7 +1999,8 @@ graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) /
 note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\armbtotzoom.png", as(png) wid(1000) replace
 
-
+graph save "D:\0kirbygo\Desktop\graphs_UN\23.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\23.png", as(png) wid(5000) replace
 
 
 
@@ -2880,6 +2924,8 @@ scheme(538) legend(label(1 "LR Statistic") label(2 "CPI Telecomm Serv."))
 
 graph export "Camb_desc_telecom.png", as(png) wid(2000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\28.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\28.png", as(png) wid(5000) replace
 
 
 
@@ -3027,6 +3073,9 @@ ylabel(#10 , format(%15.0gc) angle(0)) xlabel(#6 , angle(25)) xsize(20) ///
 scheme(538) legend(label(1 "LR Statistic") label(2 "CPI Inter. Serv."))
 
 graph export "Camb_desc_int.png", as(png) wid(2000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\29.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\29.png", as(png) wid(5000) replace
 
 *Máximos en:
 * desde la primera quincena de sept hasta finales de febrero

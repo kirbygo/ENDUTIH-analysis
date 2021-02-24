@@ -34,6 +34,9 @@ note("Source: Prepared by authors with data of the IFT, OECD and financial state
 *Salvar
 graph export "inc-ppp.png", as(png) wid(4000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\25.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\25.png", as(png) wid(5000) replace
+
 gen ing_usd_ppp_lin = (ing_usd_ppp*1000000)/lineas
 
 xtline ing_usd_ppp_lin, over ///
@@ -44,6 +47,9 @@ scheme(538) graphregion(color(white) icolor(white)) plotregion(color(white) icol
 note("Source: Prepared by authors with data of the IFT, OECD and financial statements.")
 *Salvar
 graph export "inc-ppp-line.png", as(png) wid(4000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\26.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\26.png", as(png) wid(5000) replace
 
 ******************************************* Total mobile suscriptions
 
@@ -63,6 +69,9 @@ note("Source: Prepared by authors with data of the OECD.")
 
 graph export "susperhab.png", as(png) wid(4000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\31.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\31.png", as(png) wid(5000) replace
+
 xtline datapersus if id==4 | id==5 | id==6 | id==11 | id==12 | id==18 | id==24 | id==28 | id==30 | id==33 | id==36 | id==37 | id==38 , over ///
 title("Mobile data usage per mobile broadband suscription") ///
 ytitle("GB per sus") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -71,6 +80,9 @@ scheme(538) graphregion(color(white) icolor(white)) plotregion(color(white) icol
 note("Source: Prepared by authors with data of the OECD.")
 
 graph export "datapersus.png", as(png) wid(4000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\32.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\32.png", as(png) wid(5000) replace
 
 
 ****************************************** OCDE prices
@@ -89,6 +101,9 @@ scheme(538) graphregion(color(white) icolor(white)) plotregion(color(white) icol
 note("Source: Prepared by authors with data of the OECD.")
 
 graph export "low.png", as(png) wid(4000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\30.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\30.png", as(png) wid(5000) replace
 
 xtline med if id==4 | id==5 | id==10 | id==11 | id==17 | id==22 | id==26 | id==28 | id==31 | id==34 | id==35 | id==36 , over ///
 title("Mobile broadband basket price (mid users, 300 calls + 1 GB + VAT), 2016-2017") ///
@@ -142,6 +157,8 @@ note("Source: Prepared by authors with data of the NYSE.")
 
 graph export "AMX.png", as(png) wid(4000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\4.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\4.png", as(png) wid(5000) replace
 
 
 
@@ -223,6 +240,9 @@ note("Source: Prepared by authors with data of the NYSE.")
 
 graph export "AMX-timeline.png", as(png) wid(4000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\33.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\33.png", as(png) wid(5000) replace
+
 gen prepo = 0
 *Prepo 6 marzo 2014 obs 1050
 replace prepo = 1 if fecha>=19788
@@ -284,6 +304,9 @@ tlabel(#18 , angle(25))
 
 graph export "prepo.png", as(png) wid(4000) replace
 
+graph save "D:\0kirbygo\Desktop\graphs_UN\35.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\35.png", as(png) wid(5000) replace
+
 *******PREPO2
 reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo2==0, robust
 
@@ -306,6 +329,9 @@ scheme(538) legend(label(2 "Actual price") label(1 "Prediction")) ///
 tlabel(#18 , angle(25))
 
 graph export "prepo2.png", as(png) wid(4000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\34.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\34.png", as(png) wid(5000) replace
 
 *******PREPO3
 reg dclose ldclose dvolume trend neg m1 m2 m3 m4 mo1 mo2 mo3 mo4 mo5 mo6 mo7 mo8 mo9 mo10 mo11 if prepo3==0, robust
@@ -352,6 +378,9 @@ scheme(538) legend(label(2 "Actual price") label(1 "Prediction")) ///
 tlabel(#18 , angle(25))
 
 graph export "prepo4.png", as(png) wid(4000) replace
+
+graph save "D:\0kirbygo\Desktop\graphs_UN\36.gph", replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\36.png", as(png) wid(5000) replace
 
 
 *******PREPO5
