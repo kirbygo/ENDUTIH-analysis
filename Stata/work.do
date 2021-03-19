@@ -489,6 +489,9 @@ graph export "results\inpc1.png", as(png) wid(1000) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\27.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\27.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\27.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\27.pdf", as(pdf) replace
+
 tw tsline nbtotal nbcomunic, ///
 title("Evolución INPC (General) y el subíndice INPC-Comunicaciones (Base = 15-ene-2011)") ///
 ytitle("INPC") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -512,6 +515,9 @@ graph export "results\inpc3.png", as(png) wid(1000) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\16.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\16.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\16.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\16.pdf", as(pdf) replace
 
 tw tsline nbtotal nbpaga, ///
 title("Evolución INPC (General) e INPC TV Restringida (Base = 15-ene-2011)") ///
@@ -809,6 +815,9 @@ graph export "results\BAF3.png", as(png) wid(1500) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\5.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\5.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\5.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\5.pdf", as(pdf) replace
+
 sort date
 gen trend = _n
 foreach perrito in tAMERICA_MOVIL tGRUPO_TELEVISA tMEGACABLE_MCM tTOTALPLAY {
@@ -842,6 +851,9 @@ graph export "results\crecimiento.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\6.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\6.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\6.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\6.pdf", as(pdf) replace
 
 
 clear all
@@ -885,6 +897,9 @@ graph export "results\BAF_lento.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\7.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\7.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\7.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\7.pdf", as(pdf) replace
 
 tw tsline ptAMERICA_MOVIL ptATnT ptAXTEL ptGRUPO_TELEVISA ptMAXCOM ptMEGACABLE_MCM ptTOTALPLAY, ///
 title("Participación de los principales grupos en número de accesos BAF") ///
@@ -950,6 +965,9 @@ graph export "results\BAF_rapido.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\8.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\8.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\8.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\8.pdf", as(pdf) replace
 
 
 tw tsline ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, ///
@@ -1066,6 +1084,9 @@ graph export "results\TV_rest-acc1.png", as(png) wid(1500) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\12.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\12.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\12.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\12.pdf", as(pdf) replace
+
 tw tsline ptCABLECOM ptCABLEVISION_RED ptDISH_MVS ptGRUPO_TELEVISA ptMEGACABLE_MCM ptSTARGROUP ptTOTALPLAY, ///
 title("Participación de los principales grupos en accesos TV Restringida (mensual, 2013-2019)") ///
 ytitle("Participación en accesos a TV Restringida (%)") ysize(12) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -1136,6 +1157,9 @@ graph export "results\porc-vel2.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\9.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\9.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\9.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\9.pdf", as(pdf) replace
 
 
 * Tengo que juntar lo siguiente:
@@ -1270,6 +1294,9 @@ graph export "results\TV_rest-pene.png", as(png) wid(1500) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\10.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\10.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\10.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\10.pdf", as(pdf) replace
+
 clear all
 use "ift\acc_tv_rest.dta"
 keep if year>=2013
@@ -1294,6 +1321,9 @@ graph export "results\TV_rest-tecno.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\11.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\11.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\11.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\11.pdf", as(pdf) replace
 
 clear all
 use "ift\sus_tv_rest.dta"
@@ -1358,6 +1388,9 @@ graph export "results\TV_rest-cambio-2.png", as(png) wid(1500) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\13.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\13.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\13.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\13.pdf", as(pdf) replace
+
 clear all
 use "ift\ihh_tv_rest.dta"
 keep if year>=2012
@@ -1373,6 +1406,9 @@ graph export "results\TV_rest-ihh.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\15.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\15.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\15.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\15.pdf", as(pdf) replace
 
 *Gráficas adicionales BAM
 clear all
@@ -1416,6 +1452,9 @@ graph export "results\part_BAM.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\17.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\17.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\17.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\17.pdf", as(pdf) replace
 
 tw tsline ptotAMERICA_MOVIL ptotATnT ptotIUSACELL_UNEFON ptotNEXTEL ptotTELEFONICA, ///
 title("Participación de los principales grupos en lineas con BAM (mensual, 2014-2019)") ///
@@ -1474,6 +1513,9 @@ graph export "results\BAM-vel.png", as(png) wid(1500) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\18.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\18.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\18.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\18.pdf", as(pdf) replace
 
 graph hbar dosg tresg cuatrog, over(date, relabel(1 "Ene 2015" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 "Dic 2019")) stack ///
 title("Tráfico de BAM por velocidad (mensual, 2015-2019)") ///
@@ -1711,6 +1753,9 @@ graph export "results\ingmin_inxAEP.png", as(png) wid(1000) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\19.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\19.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\19.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\19.pdf", as(pdf) replace
+
 tw tsline ingporminMóvil inx_aep, ///
 title("Inc/min of the rest vs Interconnection Rate in A. M. network (quarterly, 2013-2019)") ///
 ytitle("$/min") ysize(13) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -1722,6 +1767,9 @@ graph export "results\ingmin_inxOtros.png", as(png) wid(1000) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\20.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\20.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\20.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\20.pdf", as(pdf) replace
 
 
 tw tsline traf_salidaPreponderante ingresosPreponderante traf_salidaMóvil ingresosMóvil, ///
@@ -1781,6 +1829,9 @@ graph export "results\reten.png", as(png) wid(1000) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\21.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\21.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\21.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\21.pdf", as(pdf) replace
 
 
 bro date ingporminPreponderante ingporminMóvil inx_aep inx_otros retenAEP retenMov
@@ -1911,6 +1962,9 @@ graph export "results\arpu.png", as(png) wid(1000) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\24.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\24.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\24.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\24.pdf", as(pdf) replace
+
 *ARTB
 clear all
 use "ift\datos_int_mov.dta"
@@ -1990,6 +2044,9 @@ graph export "results\armbtot.png", as(png) wid(1000) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\22.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\22.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\22.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\22.pdf", as(pdf) replace
+
 tw tsline artbAMERICA_MOVIL artbTELEFONICA artbATnT if year>=2017, ///
 title("Average Revenue per MegaByte, Mobile Broadband (ARMB, quarterly, 2017-2019)") ///
 ytitle("ARMB") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
@@ -2002,6 +2059,8 @@ graph export "results\armbtotzoom.png", as(png) wid(1000) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\23.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\23.png", as(png) wid(5000) replace
 
+graph export "D:\0kirbygo\Desktop\graphs_UN\23.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\23.pdf", as(pdf) replace
 
 
 
@@ -2927,7 +2986,8 @@ graph export "Camb_desc_telecom.png", as(png) wid(2000) replace
 graph save "D:\0kirbygo\Desktop\graphs_UN\28.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\28.png", as(png) wid(5000) replace
 
-
+graph export "D:\0kirbygo\Desktop\graphs_UN\28.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\28.pdf", as(pdf) replace
 
 
 
@@ -3076,6 +3136,9 @@ graph export "Camb_desc_int.png", as(png) wid(2000) replace
 
 graph save "D:\0kirbygo\Desktop\graphs_UN\29.gph", replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\29.png", as(png) wid(5000) replace
+
+graph export "D:\0kirbygo\Desktop\graphs_UN\29.svg", as(svg) wid(5000) replace
+graph export "D:\0kirbygo\Desktop\graphs_UN\29.pdf", as(pdf) replace
 
 *Máximos en:
 * desde la primera quincena de sept hasta finales de febrero
