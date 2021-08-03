@@ -808,7 +808,7 @@ title("Participation in terms of BAF accesses, main groups (monthly, 2013-2019)"
 ytitle("Participation in BAF accesses (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "América Móvil") label(2 "Grupo Televisa") label(3 "Megacable") label(4 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up to 100 because the remainder is divided among" "several small participants.")
 *Salvar
 graph export "results\BAF3.png", as(png) wid(1500) replace
 
@@ -891,7 +891,7 @@ subtitle("From 2 Mbps to 9.99 Mbps") ///
 ytitle("Participation in BAF accesses (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "América Móvil") label(2 "AT&T") label(3 "Axtel") label(4 "Grupo Televisa") label(5 "Maxcom") label(6 "Megacable") label(7 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up to 100 because the remainder is divided among" "several small participants.")
 *Salvar
 graph export "results\BAF_lento.png", as(png) wid(1500) replace
 
@@ -955,11 +955,11 @@ foreach perrito in tAIRECABLE tALESTRA tAMERICA_MOVIL tATnT tAXESAT tAXTEL tCABL
 
 graph hbar ptAMERICA_MOVIL ptGRUPO_TELEVISA ptMEGACABLE_MCM ptTOTALPLAY, over(date, relabel(1 "Jan 2013" 2 " " 3 " " 4 " " 5 " " 6 " " 7 " " 8 " " 9 " " 10 " " 11 " " 12 " " 13 " " 14 " " 15 " " 16 " " 17 " " 18 " " 19 " " 20 " " 21 " " 22 " " 23 " " 24 " " 25 " " 26 " " 27 " " 28 " " 29 " " 30 " " 31 " " 32 " " 33 " " 34 " " 35 " " 36 " " 37 " " 38 " " 39 " " 40 " " 41 " " 42 " " 43 " " 44 " " 45 " " 46 " " 47 " " 48 " " 49 " " 50 " " 51 " " 52 " " 53 " " 54 " " 55 " " 56 " " 57 " " 58 " " 59 " " 60 " " 61 " " 62 " " 63 " " 64 " " 65 " " 66 " " 67 " " 68 " " 69 " " 70 " " 71 " " 72 " " 73 " " 74 " " 75 " " 76 " " 77 " " 78 " " 79 " " 80 " " 81 " " 82 " " 83 " " 84 "Dec 2019")) stack ///
 title("Participation in terms of BAF accesses, main groups (monthly, 2013-2019)") ///
-subtitle("From 10 to 100 Mbps") ///
+subtitle("From 10 Mbps to 100 Mbps") ///
 ytitle("Participation in BAF accesses (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "América Móvil") label(2 "Grupo Televisa") label(3 "Megacable") label(4 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up to 100 because the remainder is divided among" "several small participants.")
 *Salvar
 graph export "results\BAF_rapido.png", as(png) wid(1500) replace
 
@@ -1077,7 +1077,7 @@ title("Participation of main groups in terms of accesses of pay TV (monthly, 201
 ytitle("Participation in accesses pay TV (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "Cablecom") label(2 "Cablevisión") label(3 "Dish-MVS") label(4 "Grupo Televisa") label(5 "Megacable") label(6 "Total Play") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up to 100 because the remainder is divided among" "several small participants.")
 *Salvar
 graph export "results\TV_rest-acc1.png", as(png) wid(1500) replace
 
@@ -1446,7 +1446,7 @@ title("Participation in terms of lines with Mobile BroadBand (monthly, 2014-2019
 ytitle("Lines with MBB (%)") ysize(4) ylabel(#15 , format(%15.0gc) angle(0)) ///
 scheme(538) legend(label(1 "América Móvil") label(2 "AT&T") label(3 "Iusacell") label(4 "Nextel") label(5 "Telefónica") region(color(white))) ///
 graphregion(color(white) icolor(white)) plotregion(color(white) icolor(white)) ///
-note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up 100 because the reminder is divided among" "several small participants.")
+note("Source: Prepared by authors with data of the IFT, BIT." "*Percentages don't add up to 100 because the remainder is divided among" "several small participants.")
 *Salvar
 graph export "results\part_BAM.png", as(png) wid(1500) replace
 
@@ -2033,7 +2033,7 @@ note("Source: Prepared by authors with data of the IFT, BIT.")
 graph export "results\armb4g.png", as(png) wid(1000) replace
 
 tw tsline artbAMERICA_MOVIL artbTELEFONICA artbATnT, ///
-title("Average Revenue per MegaByte, Mobile Broadband (ARMB, quarterly, 2015-2019)") ///
+title("Average Revenue per Megabyte, Mobile Broadband (ARMB, quarterly, 2015-2019)") ///
 ytitle("ARMB") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
 scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") label(3 "AT&T") region(color(white))) ///
@@ -2048,7 +2048,7 @@ graph export "D:\0kirbygo\Desktop\graphs_UN\22.svg", as(svg) wid(5000) replace
 graph export "D:\0kirbygo\Desktop\graphs_UN\22.pdf", as(pdf) replace
 
 tw tsline artbAMERICA_MOVIL artbTELEFONICA artbATnT if year>=2017, ///
-title("Average Revenue per MegaByte, Mobile Broadband (ARMB, quarterly, 2017-2019)") ///
+title("Average Revenue per Megabyte, Mobile Broadband (ARMB, quarterly, 2017-2019)") ///
 ytitle("ARMB") ysize(10) ylabel(#15 , format(%15.0gc) angle(0)) ///
 ttitle("Date") xsize(20) tlabel(#12 , angle(25)) ///
 scheme(538) legend(label(1 "América Móvil") label(2 "Telefonica") label(3 "AT&T") region(color(white))) ///
